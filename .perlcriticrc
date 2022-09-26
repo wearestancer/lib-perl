@@ -1,0 +1,32 @@
+
+severity = brutal
+color = 1
+
+[-CodeLayout::RequireTidyCode]
+[-Modules::RequireVersionVar]
+[-ValuesAndExpressions::ProhibitConstantPragma]
+[-ValuesAndExpressions::ProhibitMagicNumbers]
+
+# Documentation will be generated and moved by Dist::Zilla
+[-Documentation::PodSpelling]
+[-Documentation::RequirePodAtEnd]
+[-Documentation::RequirePodSections]
+
+# Enforce use of undef
+[-Subroutines::ProhibitExplicitReturnUndef]
+
+
+# Moo will use some subroutines for us
+[-Subroutines::ProhibitUnusedPrivateSubroutines]
+
+
+[RegularExpressions::RequireExtendedFormatting]
+minimum_regex_length_to_complain_about = 10
+
+# Allow use postfix conditions
+[ControlStructures::ProhibitPostfixControls]
+allow = if unless until
+
+
+# Temporary removed
+[-Community::PreferredAlternatives]

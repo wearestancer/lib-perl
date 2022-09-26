@@ -1,0 +1,26 @@
+
+=head2 Logging
+
+{{
+  $current = $filename;
+  $current =~ s!^lib/(.+)\.pm!$1!sm;
+  $current =~ s!/!::!gsm;
+  '';
+}}
+
+We use the L<Log::Any> framework for logging events.
+You may tell where it should log using any available L<Log::Any::Adapter> module.
+
+For example, to log everything to a file you just have to add a line to your script, like this:
+    #! /usr/bin/env perl
+    use Log::Any::Adapter (File => '/var/log/payment.log');
+    use {{$current}};
+
+You must import C<Log::Any::Adapter> before our libraries, to initialize the logger instance before use.
+
+You can choose your log level on import directly:
+    use Log::Any::Adapter (File => '/var/log/payment.log', log_level => 'info');
+
+Read the L<Log::Any> documentation to know what other options you have.
+
+=cut

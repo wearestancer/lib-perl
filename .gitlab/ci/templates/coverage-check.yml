@@ -1,0 +1,19 @@
+
+.coverage-check:
+  extends: .coverage-bases
+
+  script:
+    - echo '0' >> coverage
+    - export expected=$(head -n 1 coverage)
+    - export got=$(dzil cover -select_re Stancer 2>&1 | tee output.txt | grep '^Total ' | awk '{ print $NF * 100 }')
+    - cat output.txt
+    - echo $expected $got | awk '{ printf "%+10s %.2f%%\n%+10s %.2f%%\n", "expected", $1 / 100, "got", $2 / 100 }'
+    - if [ "$got" -lt $(expr $expected - 11) ]; then exit 1; fi
+
+  cache:
+    policy: pull
+
+  except:
+    - develop
+    - master
+    - tags

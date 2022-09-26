@@ -1,0 +1,19 @@
+
+=over
+
+=item *
+
+Never, never, NEVER register a card or a bank account number in your database.
+
+=item *
+
+Always uses HTTPS in card/SEPA in communication.
+
+=item *
+
+Our API will never give you a complete card/SEPA number, only the last four digits.
+If you need to keep track, use these last four digit.
+
+=back
+
+=cut

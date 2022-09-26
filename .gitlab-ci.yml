@@ -1,0 +1,58 @@
+
+include:
+  - project: stancer/ci-template
+    ref: jds/perl
+    file: /run.yml
+
+
+stages:
+  - test
+  - test-patch-free
+  - build
+  - review
+  - deploy
+  - publish
+  - notification
+  - badge
+  - cleanup
+  - manual
+
+
+.add-remote:
+  before_script:
+    - !reference ['.perl::base', before_script]
+    - !reference ['.auto-commit::identify', script]
+    - git remote add patches $CI_REPOSITORY_URL
+    - git fetch patches --quiet
+
+
+test:perl:patch:free:
+  extends:
+    - test:perl
+    - .add-remote
+
+  stage: test-patch-free
+
+  script:
+    - git merge --no-edit --no-ff patches/patch/free
+    - !reference ['test:perl', script]
+
+
+build:perl:patch:free:
+  extends:
+    - build:perl
+    - .add-remote
+
+  script:
+    - git merge --no-edit --no-ff patches/patch/free
+    - !reference ['build:perl', script]
+
+
+Hand job:
+  extends:
+    - test:perl
+    - .perl::stable-version
+
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+      when: manual
