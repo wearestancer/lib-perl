@@ -16,7 +16,7 @@ use Moo;
 use namespace::clean;
 
 extends 'Stancer::Core::Object';
-with 'Stancer::Role::Amount';
+with 'Stancer::Role::Amount::Write';
 
 has '+endpoint' => (
     default => 'refunds',

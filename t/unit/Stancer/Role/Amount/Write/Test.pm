@@ -1,17 +1,17 @@
-package Stancer::Role::Amount::Test;
+package Stancer::Role::Amount::Write::Test;
 
 use 5.020;
 use strict;
 use warnings;
 use base qw(Test::Class);
 
-use Stancer::Role::Amount::Stub;
+use Stancer::Role::Amount::Write::Stub;
 use TestCase;
 
 ## no critic (ProhibitPunctuationVars, RequireExtendedFormatting, RequireFinalReturn)
 
 sub amount : Tests(5) {
-    my $object = Stancer::Role::Amount::Stub->new();
+    my $object = Stancer::Role::Amount::Write::Stub->new();
     my $amount = random_integer(50, 9999);
 
     is($object->amount, undef, 'Undefined by default');
@@ -26,7 +26,7 @@ sub amount : Tests(5) {
 }
 
 sub currency : Tests(12) {
-    my $object = Stancer::Role::Amount::Stub->new();
+    my $object = Stancer::Role::Amount::Write::Stub->new();
 
     is($object->currency, undef, 'Undefined by default');
 

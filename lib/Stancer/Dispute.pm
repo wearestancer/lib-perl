@@ -17,6 +17,9 @@ use Moo;
 use namespace::clean;
 
 extends 'Stancer::Core::Object';
+with qw(
+    Stancer::Role::Amount::Read
+);
 
 =method C<< Stancer::Dispute->new() : I<self> >>
 
@@ -40,16 +43,28 @@ has '+endpoint' => (
     default => 'disputes',
 );
 
+=attr C<amount>
+
+Read-only integer.
+
+Dispute amount.
+
+=attr C<currency>
+
+Read-only string.
+
+Dispute currency.
+
 =attr C<order_id>
 
-Read/Write string, 1 to 24 characters.
+Read-only string.
 
 External order id.
 
 =cut
 
 has order_id => (
-    is => 'rw',
+    is => 'rwp',
     isa => Maybe[OrderId],
     builder => sub { $_[0]->_attribute_builder('order_id') },
     lazy => 1,
@@ -59,14 +74,14 @@ has order_id => (
 
 =attr C<payment>
 
-Read/Write instance of C<Stancer::Payment>.
+Read-only instance of C<Stancer::Payment>.
 
 Related payment object.
 
 =cut
 
 has payment => (
-    is => 'rw',
+    is => 'rwp',
     isa => Maybe[PaymentInstance],
     builder => sub { $_[0]->_attribute_builder('payment') },
     coerce => coerce_instance('Stancer::Payment'),

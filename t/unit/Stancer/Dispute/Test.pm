@@ -13,14 +13,16 @@ use TestCase qw(:lwp);
 
 ## no critic (ProhibitPunctuationVars, RequireExtendedFormatting, RequireFinalReturn)
 
-sub instanciate : Tests(7) {
-    { # 2 tests
+sub instanciate : Tests(8) {
+    { # 3 tests
         note 'Empty new instance';
 
         my $object = Stancer::Dispute->new();
 
-        isa_ok($object, 'Stancer::Dispute', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Dispute', 'Stancer::Dispute->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Dispute->new()');
+
+        ok($object->does('Stancer::Role::Amount::Read'), 'Should use Stancer::Role::Amount::Read');
     }
 
     { # 5 tests
@@ -52,6 +54,57 @@ sub instanciate : Tests(7) {
     }
 }
 
+sub amount : Tests(3) {
+    { # 2 tests
+        note 'Should alert if amount is used as a setter';
+
+        my $object = Stancer::Dispute->new();
+
+        is($object->amount, undef, 'Undefined by default');
+
+        throws_ok { $object->amount(random_integer(50, 99_999)) } qr/amount is a read-only accessor/sm, 'Not writable';
+    }
+
+    { # 1 test
+        note 'Can return a value on call';
+
+        my $content = read_file '/t/fixtures/disputes/get.json';
+
+        $mock_ua->clear();
+        $mock_response->set_series('decoded_content', $content);
+
+        my $dispute = Stancer::Dispute->new(random_string(29));
+
+        is($dispute->amount, 5247, 'Should have an amount');
+    }
+}
+
+sub currency : Tests(3) {
+    { # 2 tests
+        note 'Should alert if currency is used as a setter';
+
+        my $object = Stancer::Dispute->new();
+        my $currency = currencies_provider();
+
+        is($object->currency, undef, 'Undefined by default');
+
+        throws_ok { $object->currency($currency) } qr/currency is a read-only accessor/sm, 'Not writable';
+    }
+
+    { # 1 test
+        note 'Can return a value on call';
+
+        my $content = read_file '/t/fixtures/disputes/get.json';
+
+        $mock_ua->clear();
+        $mock_response->set_series('decoded_content', $content);
+
+        my $dispute = Stancer::Dispute->new(random_string(29));
+
+        is($dispute->currency, 'eur', 'Should have a currency');
+    }
+}
+
 sub endpoint : Test {
     my $object = Stancer::Dispute->new();
 
@@ -66,6 +119,7 @@ sub list : Tests(117) {
         my $content2 = read_file '/t/fixtures/disputes/list-2.json';
         my $dispute;
 
+        $mock_ua->clear();
         $mock_response->set_series('decoded_content', $content1, $content2);
 
         my $created = random_integer(1_000_000);
@@ -247,8 +301,8 @@ sub list : Tests(117) {
         my $content = read_file '/t/fixtures/disputes/list-3.json';
         my $dispute;
 
-        $mock_response->set_always(decoded_content => $content);
         $mock_ua->clear();
+        $mock_response->set_always(decoded_content => $content);
 
         my $created = random_integer(1_000_000);
 
@@ -291,8 +345,8 @@ sub list : Tests(117) {
         my $content = read_file '/t/fixtures/disputes/list-3.json';
         my $dispute;
 
-        $mock_response->set_always(decoded_content => $content);
         $mock_ua->clear();
+        $mock_response->set_always(decoded_content => $content);
 
         my $created = random_integer(1_000_000);
         my $date1 = DateTime->from_epoch(epoch => $created);
@@ -338,8 +392,8 @@ sub list : Tests(117) {
         my $content = read_file '/t/fixtures/disputes/list-3.json';
         my $dispute;
 
-        $mock_response->set_always(decoded_content => $content);
         $mock_ua->clear();
+        $mock_response->set_always(decoded_content => $content);
 
         my $created = random_integer(1_000_000);
         my $date1 = DateTime->from_epoch(epoch => $created - 1);
@@ -375,8 +429,8 @@ sub list : Tests(117) {
         my $content = read_file '/t/fixtures/disputes/list-3.json';
         my $dispute;
 
-        $mock_response->set_always(decoded_content => $content);
         $mock_ua->clear();
+        $mock_response->set_always(decoded_content => $content);
 
         my $created = random_integer(1_000_000);
         my $date1 = DateTime->from_epoch(epoch => $created);
@@ -418,40 +472,81 @@ sub list : Tests(117) {
 }
 
 sub order_id : Tests(3) {
-    my $object = Stancer::Dispute->new();
-    my $order_id = random_string(10);
+    { # 2 tests
+        note 'Should alert if order_id is used as a setter';
 
-    is($object->order_id, undef, 'Undefined by default');
+        my $object = Stancer::Dispute->new();
 
-    $object->order_id($order_id);
+        is($object->order_id, undef, 'Undefined by default');
 
-    is($object->order_id, $order_id, 'Should be updated');
-    cmp_deeply_json($object, { order_id => $order_id }, 'Should be exported');
+        throws_ok { $object->order_id(random_string(10)) } qr/order_id is a read-only accessor/sm, 'Not writable';
+    }
+
+    { # 1 test
+        note 'Can return a value on call';
+
+        my $content = read_file '/t/fixtures/disputes/get.json';
+
+        $mock_ua->clear();
+        $mock_response->set_series('decoded_content', $content);
+
+        my $dispute = Stancer::Dispute->new(random_string(29));
+
+        is($dispute->order_id, '825030405', 'Should have an order ID');
+    }
 }
 
-sub payment : Tests(3) {
-    my $object = Stancer::Dispute->new();
-    my $payment = Stancer::Payment->new();
+sub payment : Tests(4) {
+    { # 2 tests
+        note 'Should alert if payment is used as a setter';
 
-    is($object->payment, undef, 'Undefined by default');
+        my $object = Stancer::Dispute->new();
+        my $payment = Stancer::Payment->new();
 
-    $object->payment($payment);
+        is($object->payment, undef, 'Undefined by default');
 
-    is($object->payment, $payment, 'Should be updated');
-    cmp_deeply_json($object, { payment => {} }, 'Should be exported');
+        throws_ok { $object->payment($payment) } qr/payment is a read-only accessor/sm, 'Not writable';
+    }
+
+    { # 2 test
+        note 'Can return a value on call';
+
+        my $content = read_file '/t/fixtures/disputes/get.json';
+
+        $mock_ua->clear();
+        $mock_response->set_series('decoded_content', $content);
+
+        my $dispute = Stancer::Dispute->new(random_string(29));
+        my $payment = $dispute->payment;
+
+        isa_ok($payment, 'Stancer::Payment', 'Stancer::Dispute->new($id)->payment');
+        is($payment->id, 'paym_oTwazegPIbxPnUWDntboWvyL', 'Should have expected ID');
+    }
 }
 
 sub response : Tests(3) {
-    my $object = Stancer::Dispute->new();
-    my $response = random_string(2);
+    { # 2 tests
+        note 'Should alert if response is used as a setter';
 
-    is($object->response, undef, 'Undefined by default');
+        my $object = Stancer::Dispute->new();
 
-    $object->hydrate(response => $response);
+        is($object->response, undef, 'Undefined by default');
 
-    is($object->response, $response, 'Should have a value');
+        throws_ok { $object->response(random_string(2)) } qr/response is a read-only accessor/sm, 'Not writable';
+    }
 
-    throws_ok { $object->response($response) } qr/response is a read-only accessor/sm, 'Not writable';
+    { # 1 test
+        note 'Can return a value on call';
+
+        my $content = read_file '/t/fixtures/disputes/get.json';
+
+        $mock_ua->clear();
+        $mock_response->set_series('decoded_content', $content);
+
+        my $dispute = Stancer::Dispute->new(random_string(29));
+
+        is($dispute->response, '45', 'Should have a response');
+    }
 }
 
 1;

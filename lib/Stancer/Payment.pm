@@ -26,7 +26,7 @@ use Moo;
 
 extends 'Stancer::Core::Object';
 with qw(
-    Stancer::Role::Amount
+    Stancer::Role::Amount::Write
     Stancer::Role::Country
     Stancer::Role::Payment::Auth
     Stancer::Role::Payment::Methods

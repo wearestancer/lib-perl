@@ -29,7 +29,7 @@ sub instanciate : Tests(30) {
         isa_ok($object, 'Stancer::Payment', 'Should return current instance');
         isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
 
-        ok($object->does('Stancer::Role::Amount'), 'Should use Stancer::Role::Amount');
+        ok($object->does('Stancer::Role::Amount::Write'), 'Should use Stancer::Role::Amount::Write');
         ok($object->does('Stancer::Role::Country'), 'Should use Stancer::Role::Country');
     }
 

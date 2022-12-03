@@ -18,7 +18,7 @@ sub instanciate : Tests(8) {
         isa_ok($object, 'Stancer::Refund', 'Should return current instance');
         isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
 
-        ok($object->does('Stancer::Role::Amount'), 'Should use Stancer::Role::Amount');
+        ok($object->does('Stancer::Role::Amount::Write'), 'Should use Stancer::Role::Amount::Write');
     }
 
     {
