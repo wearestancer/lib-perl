@@ -14,7 +14,7 @@ sub instanciate : Tests(4) {
     my $callback = sub {};
     my $object = Stancer::Core::Iterator->new($callback);
 
-    isa_ok($object, 'Stancer::Core::Iterator');
+    isa_ok($object, 'Stancer::Core::Iterator', 'Stancer::Core::Iterator->new($callback)');
     is($object->{callback}, $callback, 'Should have the callback');
 
     is($object->_create_element, undef, 'Void method (_create_element)');
@@ -67,8 +67,8 @@ sub next : Tests(3) {
 sub search : Tests(2) {
     my $id = random_string(20);
 
-    isa_ok(Stancer::Core::Iterator->search(id => $id), 'Stancer::Core::Iterator', 'Should work with a hash');
-    isa_ok(Stancer::Core::Iterator->search({id => $id}), 'Stancer::Core::Iterator', 'Should work with a hashref');
+    isa_ok(Stancer::Core::Iterator->search(id => $id), 'Stancer::Core::Iterator', 'Stancer::Core::Iterator->search(id => $id)');
+    isa_ok(Stancer::Core::Iterator->search({id => $id}), 'Stancer::Core::Iterator', 'Stancer::Core::Iterator->search({id => $id})');
 }
 
 1;

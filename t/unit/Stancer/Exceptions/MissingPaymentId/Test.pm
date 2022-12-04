@@ -14,9 +14,9 @@ use TestCase;
 sub instance : Tests(5) {
     my $object = Stancer::Exceptions::MissingPaymentId->new();
 
-    isa_ok($object, 'Stancer::Exceptions::MissingPaymentId', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::BadMethodCall', 'Should be a bad method call exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::MissingPaymentId', 'Stancer::Exceptions::MissingPaymentId->new()');
+    isa_ok($object, 'Stancer::Exceptions::BadMethodCall', 'Stancer::Exceptions::MissingPaymentId->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::MissingPaymentId->new()');
 
     is($object->message, 'A payment ID is mandatory. Maybe you forgot to send the payment.', 'Has default message');
     is($object->log_level, 'critical', 'Has a log level');

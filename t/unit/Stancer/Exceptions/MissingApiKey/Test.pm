@@ -13,9 +13,9 @@ use TestCase;
 sub instance : Tests(5) {
     my $object = Stancer::Exceptions::MissingApiKey->new();
 
-    isa_ok($object, 'Stancer::Exceptions::MissingApiKey', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::BadMethodCall', 'Should be a bad method call exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::MissingApiKey', 'Stancer::Exceptions::MissingApiKey->new()');
+    isa_ok($object, 'Stancer::Exceptions::BadMethodCall', 'Stancer::Exceptions::MissingApiKey->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::MissingApiKey->new()');
 
     is($object->message, 'You did not provide valid API key.', 'Has default message');
     is($object->log_level, 'critical', 'Has a log level');

@@ -14,9 +14,9 @@ use TestCase;
 sub instance : Tests(5) {
     my $object = Stancer::Exceptions::InvalidEmail->new();
 
-    isa_ok($object, 'Stancer::Exceptions::InvalidEmail', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Should be an invalid argument exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::InvalidEmail', 'Stancer::Exceptions::InvalidEmail->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Stancer::Exceptions::InvalidEmail->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::InvalidEmail->new()');
 
     is($object->message, 'Invalid email address.', 'Has default message');
     is($object->log_level, 'debug', 'Has a log level');

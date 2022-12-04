@@ -14,10 +14,10 @@ use TestCase;
 sub instance : Tests(6) {
     my $object = Stancer::Exceptions::InvalidSearchUniqueId->new();
 
-    isa_ok($object, 'Stancer::Exceptions::InvalidSearchUniqueId', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::InvalidSearchFilter', 'Should be a search filter exception');
-    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Should be an invalid argument exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::InvalidSearchUniqueId', 'Stancer::Exceptions::InvalidSearchUniqueId->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidSearchFilter', 'Stancer::Exceptions::InvalidSearchUniqueId->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Stancer::Exceptions::InvalidSearchUniqueId->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::InvalidSearchUniqueId->new()');
 
     is($object->message, 'Invalid unique ID.', 'Has default message');
     is($object->log_level, 'debug', 'Has a log level');

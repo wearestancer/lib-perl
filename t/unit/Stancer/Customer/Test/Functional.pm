@@ -23,7 +23,7 @@ sub get_data : Tests(11) {
     # Complete customer
     $object = Stancer::Customer->new('cust_PpdYwq0ZPdoags46d5cB9HpQ')->populate();
 
-    isa_ok($object, 'Stancer::Customer', 'Should return a valid instance (complete)');
+    isa_ok($object, 'Stancer::Customer', 'Stancer::Customer->new($id)');
 
     is($object->name, 'John Doe', 'Should have a name (complete)');
     is($object->email, 'john.doe@example.com', 'Should have a email (complete)');
@@ -33,7 +33,7 @@ sub get_data : Tests(11) {
     # Partial customer (no mobile)
     $object = Stancer::Customer->new('cust_sNYCnYGw12Cj606FnM8a3gbu')->populate();
 
-    isa_ok($object, 'Stancer::Customer', 'Should return a valid instance (partial)');
+    isa_ok($object, 'Stancer::Customer', 'Stancer::Customer->new($id)');
 
     is($object->name, 'John Doe', 'Should have a name (partial)');
     is($object->email, 'john.doe@example.com', 'Should have a email (partial)');
@@ -79,7 +79,7 @@ sub send_global : Tests(16) {
             $object->name('John Doe (' . $tag . q/)/);
             $object->$attr($attrs->{$attr});
 
-            isa_ok($object->send(), 'Stancer::Customer', 'Should allow to send with only "' . $attr . q/"/);
+            isa_ok($object->send(), 'Stancer::Customer', '$object->send() (with only "' . $attr . q/")/);
 
             ok(defined $object->id, 'Should have an id');
         }

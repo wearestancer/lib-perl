@@ -14,9 +14,9 @@ use TestCase;
 sub instance : Tests(5) {
     my $object = Stancer::Exceptions::InvalidSearchFilter->new();
 
-    isa_ok($object, 'Stancer::Exceptions::InvalidSearchFilter', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Should be an invalid argument exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::InvalidSearchFilter', 'Stancer::Exceptions::InvalidSearchFilter->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Stancer::Exceptions::InvalidSearchFilter->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::InvalidSearchFilter->new()');
 
     is($object->message, 'Invalid search filters.', 'Has default message');
     is($object->log_level, 'debug', 'Has a log level');

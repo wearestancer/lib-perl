@@ -13,7 +13,7 @@ use TestCase;
 sub instance : Tests(4) {
     my $object = Stancer::Exceptions::Throwable->new();
 
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should return current instance');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::Throwable->new()');
     ok($object->does('Throwable'), 'Should be throwable');
 
     is($object->message, 'Unexpected error.', 'Has default message');

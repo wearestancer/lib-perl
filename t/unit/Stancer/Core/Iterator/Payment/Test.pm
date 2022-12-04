@@ -12,8 +12,8 @@ use TestCase;
 sub instanciate : Tests(2) {
     my $object = Stancer::Core::Iterator::Payment->new();
 
-    isa_ok($object, 'Stancer::Core::Iterator::Payment', 'Should return current instance');
-    isa_ok($object, 'Stancer::Core::Iterator', 'Should be a child of Core::Iterator');
+    isa_ok($object, 'Stancer::Core::Iterator::Payment', 'Stancer::Core::Iterator::Payment->new()');
+    isa_ok($object, 'Stancer::Core::Iterator', 'Stancer::Core::Iterator::Payment->new()');
 }
 
 1;

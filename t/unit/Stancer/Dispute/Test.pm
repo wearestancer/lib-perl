@@ -38,7 +38,7 @@ sub instanciate : Tests(8) {
             payment => $payment,
         );
 
-        isa_ok($object, 'Stancer::Dispute', 'Should return current instance');
+        isa_ok($object, 'Stancer::Dispute', 'Stancer::Dispute->new(foo => "bar")');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -126,11 +126,11 @@ sub list : Tests(117) {
 
         my $list = Stancer::Dispute->list({created => $created});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Should return a Dispute iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list({created => $created})');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (1st)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (1st)');
         is($dispute->id, 'dspt_kkyLpFvqM8JYQrBJlhN9bxSY', 'Should be expected dispute (1st)');
 
         # Only one call for now
@@ -143,12 +143,12 @@ sub list : Tests(117) {
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (2nd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (2nd)');
         is($dispute->id, 'dspt_VIk2SufjagxqT6ZtoRbqUkUm', 'Should be expected dispute (2nd)');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (3rd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (3rd)');
         is($dispute->id, 'dspt_lkR6152bNJ6XvPpG5uvkbMfu', 'Should be expected dispute (3rd)');
 
         # Called a second time as the response says "has more"
@@ -173,7 +173,7 @@ sub list : Tests(117) {
 
         my $failed = Stancer::Dispute->list(created => random_integer(1_000_000));
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Dispute', 'Should return a Dispute iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(created => $created)');
 
         my $dispute = $failed->next();
 
@@ -211,7 +211,7 @@ sub list : Tests(117) {
         throws_ok { Stancer::Dispute->list(created => Stancer::Card->new()) } 'Stancer::Exceptions::InvalidSearchCreation', 'Should not accept blessed variable other than DataTime';
         is($@->message, 'Created must be a position integer or a DateTime object.', $message->());
 
-        isa_ok(Stancer::Dispute->list(created => time - 1000), 'Stancer::Core::Iterator::Dispute', 'Should accept created filter otherwise');
+        isa_ok(Stancer::Dispute->list(created => time - 1000), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(created => $created)');
 
         note 'Exceptions - created until';
         # 11 tests
@@ -231,7 +231,7 @@ sub list : Tests(117) {
         throws_ok { Stancer::Dispute->list(created => time - 100, created_until => time - 200) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be after created';
         is($@->message, 'Created until can not be before created.', $message->());
 
-        isa_ok(Stancer::Dispute->list(created_until => time - 1000), 'Stancer::Core::Iterator::Dispute', 'Should accept created filter otherwise');
+        isa_ok(Stancer::Dispute->list(created_until => time - 1000), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(created_until => $created_until)');
 
         note 'Exceptions - limit';
         # 7 tests
@@ -245,7 +245,7 @@ sub list : Tests(117) {
         throws_ok { Stancer::Dispute->list(limit => random_string(10)) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be an integer';
         is($@->message, 'Limit must be an integer.', $message->());
 
-        isa_ok(Stancer::Dispute->list(limit => random_integer(99) + 1), 'Stancer::Core::Iterator::Dispute', 'Should accept limit filter otherwise');
+        isa_ok(Stancer::Dispute->list(limit => random_integer(99) + 1), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(limit => $limit)');
 
         note 'Exceptions - start';
         # 5 tests
@@ -256,7 +256,7 @@ sub list : Tests(117) {
         throws_ok { Stancer::Dispute->list(start => random_string(10)) } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be an integer';
         is($@->message, 'Start must be a positive integer.', $message->());
 
-        isa_ok(Stancer::Dispute->list(start => random_integer(100)), 'Stancer::Core::Iterator::Dispute', 'Should accept start filter otherwise');
+        isa_ok(Stancer::Dispute->list(start => random_integer(100)), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(start => $start)');
 
         note 'Exceptions - empty';
         # 4 tests
@@ -282,7 +282,7 @@ sub list : Tests(117) {
 
         my $list = Stancer::Dispute->list(%filters);
 
-        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Should accept every filter in same call');
+        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(%filters)');
 
         $list->next();
 
@@ -308,11 +308,11 @@ sub list : Tests(117) {
 
         my $list = Stancer::Dispute->list({created => $created, created_until => 1_541_372_400});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Should return a Dispute iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list({created => $created})');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (1st)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (1st)');
         is($dispute->id, 'dspt_ZSnN0wV6Dk0qXe0Q2IXBcxAU', 'Should be expected dispute (1st)');
 
         # Only one call for now
@@ -325,12 +325,12 @@ sub list : Tests(117) {
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (2nd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (2nd)');
         is($dispute->id, 'dspt_AkHxiO2T7BSRXeuir4cyolL6', 'Should be expected dispute (2nd)');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (3rd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (3rd)');
         is($dispute->id, 'dspt_cXDMoCAjR2UoGkaPjAZRXMRU', 'Should be expected dispute (3rd)');
 
         $dispute = $list->next();
@@ -355,11 +355,11 @@ sub list : Tests(117) {
 
         my $list = Stancer::Dispute->list({created => $span});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Should return a Dispute iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list({created => $span})');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (1st)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list-->next() (1st)');
         is($dispute->id, 'dspt_ZSnN0wV6Dk0qXe0Q2IXBcxAU', 'Should be expected dispute (1st)');
 
         # Only one call for now
@@ -372,12 +372,12 @@ sub list : Tests(117) {
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (2nd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list-->next() (2nd)');
         is($dispute->id, 'dspt_AkHxiO2T7BSRXeuir4cyolL6', 'Should be expected dispute (2nd)');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (3rd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list-->next() (3rd)');
         is($dispute->id, 'dspt_cXDMoCAjR2UoGkaPjAZRXMRU', 'Should be expected dispute (3rd)');
 
         $dispute = $list->next();
@@ -402,11 +402,11 @@ sub list : Tests(117) {
 
         my $list = Stancer::Dispute->list({created => $span});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Should return a Dispute iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list({created => $span})');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (1st)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (1st)');
         is($dispute->id, 'dspt_ZSnN0wV6Dk0qXe0Q2IXBcxAU', 'Should be expected dispute (1st)');
 
         # Only one call for now
@@ -443,7 +443,7 @@ sub list : Tests(117) {
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (1st)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (1st)');
         is($dispute->id, 'dspt_ZSnN0wV6Dk0qXe0Q2IXBcxAU', 'Should be expected dispute (1st)');
 
         # Only one call for now
@@ -456,12 +456,12 @@ sub list : Tests(117) {
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (2nd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (2nd)');
         is($dispute->id, 'dspt_AkHxiO2T7BSRXeuir4cyolL6', 'Should be expected dispute (2nd)');
 
         $dispute = $list->next();
 
-        isa_ok($dispute, 'Stancer::Dispute', 'Should return a dispute object (3rd)');
+        isa_ok($dispute, 'Stancer::Dispute', '$list->next() (3rd)');
         is($dispute->id, 'dspt_cXDMoCAjR2UoGkaPjAZRXMRU', 'Should be expected dispute (3rd)');
 
         $dispute = $list->next();

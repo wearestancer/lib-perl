@@ -50,10 +50,10 @@ sub get_data : Tests(9) {
     is($payment->description, 'Automatic test, 78.10 USD', 'Should have a description');
     is($payment->method, 'card', 'Should have a method');
 
-    isa_ok($payment->card, 'Stancer::Card', 'Should have a card');
+    isa_ok($payment->card, 'Stancer::Card', '$payment->card');
     is($payment->card->id, 'card_nsA0eap90E6HRod6j54pnVWg', 'Card should have an id');
 
-    isa_ok($payment->customer, 'Stancer::Customer', 'Should have a customer');
+    isa_ok($payment->customer, 'Stancer::Customer', '$payment->customer');
     is($payment->customer->id, 'cust_6FbQaYtxjADzerqdO5gs79as', 'Customer should have an id');
 }
 
@@ -116,14 +116,14 @@ sub list : Tests(38) {
         my $list = Stancer::Payment->list({order_id => $order_id});
         my $index = 0;
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({order_id => $order_id})');
 
         while (my $payment = $list->next()) {
             my $sent = $payments[$index];
 
             $index++;
 
-            isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (payment ' . $index . q/)/);
+            isa_ok($payment, 'Stancer::Payment', '$list->next() (payment ' . $index . q/)/);
 
             is($payment->id, $sent->id, 'Should have same id (payment ' . $index . q/)/);
             is($payment->amount, $sent->amount, 'Should have same amount (payment ' . $index . q/)/);
@@ -147,7 +147,7 @@ sub list : Tests(38) {
         my $list = Stancer::Payment->list({order_id => '1337'});
         my $index = 0;
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({order_id => $order_id})');
 
         while (my $payment = $list->next()) {
             fail('Should not find any payment');
@@ -175,7 +175,7 @@ sub list : Tests(38) {
             paym_BA8Ocj87XUgi3yn5dy0UPaDz
         );
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({created => $created})');
 
         while (my $payment = $list->next()) {
             my $id = shift @payments;
@@ -313,7 +313,7 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         like($card->id, qr/^card_/sm, 'Card should have an id');
         like($customer->id, qr/^cust_/sm, 'Customer should have an id');
@@ -363,13 +363,13 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         like($card->id, qr/^card_/sm, 'Card should have an id');
         like($customer->id, qr/^cust_/sm, 'Customer should have an id');
         is($customer->id, $customer_id, 'Customer should be recovered from previous call');
 
-        isa_ok($payment->auth, 'Stancer::Auth', 'Should have a auth object');
+        isa_ok($payment->auth, 'Stancer::Auth', '$payment->auth');
         is($payment->auth->status, Stancer::Auth::Status::AVAILABLE, 'Auth should be available');
         like($payment->auth->redirect_url, qr/^https:\/\/3ds[.]/sm, 'Should have an authentication redirection URL');
         is($payment->auth->return_url, $return_url, 'Should have an authentication return URL');
@@ -402,14 +402,14 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         like($customer->id, qr/^cust_/sm, 'Customer should have an id');
 
         is($payment->method, undef, 'Should not have a method');
         is($payment->status, undef, 'Should not have a status');
 
-        isa_ok($payment->auth, 'Stancer::Auth', 'Should have a auth object');
+        isa_ok($payment->auth, 'Stancer::Auth', '$payment->auth');
         is($payment->auth->status, Stancer::Auth::Status::REQUESTED, 'Auth should be requested');
         is($payment->auth->redirect_url, undef, 'Should have an authentication redirection URL');
         is($payment->auth->return_url, undef, 'Should have an authentication return URL');
@@ -440,7 +440,7 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         like($customer->id, qr/^cust_/sm, 'Customer should have an id');
 
@@ -472,7 +472,7 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         like($customer->id, qr/^cust_/sm, 'Customer should have an id');
 
@@ -544,7 +544,7 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         like($card->id, qr/^card_/sm, 'Card should have an id');
         like($customer->id, qr/^cust_/sm, 'Customer should have an id');
@@ -586,7 +586,7 @@ sub send_global : Tests(49) {
         $payment->send();
 
         like($payment->id, qr/^paym_/sm, 'Should have an id');
-        isa_ok($payment->created, 'DateTime', 'Should have a creation date');
+        isa_ok($payment->created, 'DateTime', '$payment->created');
 
         is($card->id, $card_id, 'Card should have the same id');
         is($customer->id, $customer_id, 'Customer should have the same id');

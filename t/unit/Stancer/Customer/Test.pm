@@ -15,8 +15,8 @@ sub instanciate : Tests(12) {
     {
         my $object = Stancer::Customer->new();
 
-        isa_ok($object, 'Stancer::Customer', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Customer', 'Stancer::Customer->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Customer->new()');
 
         ok($object->does('Stancer::Role::Name'), 'Should use Stancer::Role::Name');
     }
@@ -34,7 +34,7 @@ sub instanciate : Tests(12) {
             name => $name,
         );
 
-        isa_ok($object, 'Stancer::Customer', 'Should return current instance');
+        isa_ok($object, 'Stancer::Customer', 'Stancer::Customer->new(foo => "bar")');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -55,7 +55,7 @@ sub instanciate : Tests(12) {
         my $id = random_string(29);
         my $object = Stancer::Customer->new($id);
 
-        isa_ok($object, 'Stancer::Customer', 'Should return current instance');
+        isa_ok($object, 'Stancer::Customer', 'Stancer::Customer->new($id)');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -134,11 +134,11 @@ sub populate : Tests(8) {
 
     $mock_response->set_always(decoded_content => encode_json \%data);
 
-    isa_ok(Stancer::Customer->new->populate(), 'Stancer::Customer', 'Return itself even if no ID was provided');
+    isa_ok(Stancer::Customer->new->populate(), 'Stancer::Customer', 'Stancer::Customer->new()->populate()');
 
     is($mock_ua->called('request'), 0, 'LWP::UserAgent was not used');
 
-    isa_ok($object->populate(), 'Stancer::Customer', 'Return itself');
+    isa_ok($object->populate(), 'Stancer::Customer', '$object->populate()');
 
     is($mock_ua->called('request'), 1, 'LWP::UserAgent was used');
 
@@ -173,7 +173,7 @@ sub send_global : Tests(12) {
 
     $object->hydrate(id => $id);
 
-    isa_ok($object->send(), 'Stancer::Customer', 'Return itself');
+    isa_ok($object->send(), 'Stancer::Customer', '$object->send()');
 
     is($object->email, 'david@coaster.net', 'Should have an email');
     is($object->mobile, '+33684858687', 'Should have a mobile phoone number');

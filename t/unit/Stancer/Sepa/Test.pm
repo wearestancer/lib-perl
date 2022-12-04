@@ -17,8 +17,8 @@ sub instanciate : Tests(15) {
     { # 4 tests
         my $object = Stancer::Sepa->new();
 
-        isa_ok($object, 'Stancer::Sepa', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Sepa', 'Stancer::Sepa->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Sepa->new()');
 
         ok($object->does('Stancer::Role::Country'), 'Should use Stancer::Role::Country');
         ok($object->does('Stancer::Role::Name'), 'Should use Stancer::Role::Name');
@@ -46,16 +46,16 @@ sub instanciate : Tests(15) {
 
         $iban =~ s/\s//gsm;
 
-        isa_ok($object, 'Stancer::Sepa', 'Should return current instance');
+        isa_ok($object, 'Stancer::Sepa', 'Stancer::Sepa->new(foo => "bar")');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
         is($object->bic, uc $bic, 'Should have a value for `bic` property');
 
-        isa_ok($object->date_birth, 'DateTime', 'Should have an object for `date_birth` property');
+        isa_ok($object->date_birth, 'DateTime', '$object->date_birth');
         is($object->date_birth->ymd, $date_birth, 'Should have expected date in it');
 
-        isa_ok($object->date_mandate, 'DateTime', 'Should have an object for `date_mandate` property');
+        isa_ok($object->date_mandate, 'DateTime', '$object->date_mandate');
         is($object->date_mandate->epoch, $date_mandate, 'Should have expected date in it');
 
         is($object->iban, $iban, 'Should have a value for `iban` property');
@@ -113,7 +113,7 @@ sub check : Tests(13) {
         $mock_response->set_always(decoded_content => $content);
         $mock_ua->clear();
 
-        isa_ok($sepa->check, 'Stancer::Sepa::Check', 'Should create a Sepa::Check instance');
+        isa_ok($sepa->check, 'Stancer::Sepa::Check', '$sepa->check');
 
         # Data are from fixtures
         is($sepa->check->id, 'sepa_fZvOCm7oDmUJhqvezEtlZwXa', 'Should have an id');
@@ -334,7 +334,7 @@ sub populate : Tests(8) {
         my $object = Stancer::Sepa->new('sepa_bIvCZePYqfMlU11TANT8IqL1');
 
         if ($key eq 'created' || $key eq 'date_mandate') {
-            isa_ok($object->$key, 'DateTime', $key . ' should trigger populate and create an instance');
+            isa_ok($object->$key, 'DateTime', '$object->' . $key);
             is($object->$key->epoch, $props{$key}, 'created should have right value');
         } else {
             is($object->$key, $props{$key}, $key . ' should trigger populate');

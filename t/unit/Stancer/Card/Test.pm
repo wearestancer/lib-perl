@@ -17,8 +17,8 @@ sub instanciate : Tests(15) {
 
         my $object = Stancer::Card->new();
 
-        isa_ok($object, 'Stancer::Card', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Card', 'Stancer::Card->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Card->new()');
 
         ok($object->does('Stancer::Role::Country'), 'Should use Stancer::Role::Country');
         ok($object->does('Stancer::Role::Name'), 'Should use Stancer::Role::Name');
@@ -44,7 +44,7 @@ sub instanciate : Tests(15) {
             number => $cards[0],
         );
 
-        isa_ok($object, 'Stancer::Card', 'Should return current instance');
+        isa_ok($object, 'Stancer::Card', 'Stancer::Card->new($data)');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -71,7 +71,7 @@ sub instanciate : Tests(15) {
         my $id = random_string(29);
         my $object = Stancer::Card->new($id);
 
-        isa_ok($object, 'Stancer::Card', 'Should return current instance');
+        isa_ok($object, 'Stancer::Card', 'Stancer::Card->new($id)');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -301,7 +301,7 @@ sub populate : Tests(11) {
         my $object = Stancer::Card->new('card_ub99idEIFcbK517ZrKBIrt4y');
 
         if ($key eq 'created') {
-            isa_ok($object->created, 'DateTime', 'created should trigger populate and create an instance');
+            isa_ok($object->created, 'DateTime', '$card->created');
             is($object->created->epoch, $props{$key}, 'created should have right value');
         } else {
             is($object->$key, $props{$key}, $key . ' should trigger populate');

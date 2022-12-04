@@ -26,8 +26,8 @@ sub instanciate : Tests(30) {
 
         my $object = Stancer::Payment->new();
 
-        isa_ok($object, 'Stancer::Payment', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Payment', 'Stancer::Payment->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Payment->new()');
 
         ok($object->does('Stancer::Role::Amount::Write'), 'Should use Stancer::Role::Amount::Write');
         ok($object->does('Stancer::Role::Country'), 'Should use Stancer::Role::Country');
@@ -63,7 +63,7 @@ sub instanciate : Tests(30) {
             unique_id => $unique_id,
         );
 
-        isa_ok($object, 'Stancer::Payment', 'Should return current instance');
+        isa_ok($object, 'Stancer::Payment', 'Stancer::Payment->new(foo => "bar")');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -129,7 +129,7 @@ sub instanciate : Tests(30) {
             sepa => $sepa,
         );
 
-        isa_ok($object, 'Stancer::Payment', 'Should return current instance');
+        isa_ok($object, 'Stancer::Payment', 'Stancer::Payment->new(foo => "bar")');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -167,7 +167,7 @@ sub instanciate : Tests(30) {
         my $id = random_string(29);
         my $object = Stancer::Payment->new($id);
 
-        isa_ok($object, 'Stancer::Payment', 'Should return current instance');
+        isa_ok($object, 'Stancer::Payment', 'Stancer::Payment->new($id)');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -213,7 +213,7 @@ sub auth : Tests(14) {
 
         $object->auth($return_url);
 
-        isa_ok($object->auth, 'Stancer::Auth', 'Should create an Auth instance');
+        isa_ok($object->auth, 'Stancer::Auth', '$object->auth');
         is($object->auth->return_url, $return_url, 'Should update `return_url` attribute');
         is($object->auth->status, Stancer::Auth::Status::REQUEST, 'Should have a `request` status');
 
@@ -236,7 +236,7 @@ sub auth : Tests(14) {
 
         $object->auth($true);
 
-        isa_ok($object->auth, 'Stancer::Auth', 'Should create an Auth instance');
+        isa_ok($object->auth, 'Stancer::Auth', '$object->auth');
         is($object->auth->status, Stancer::Auth::Status::REQUEST, 'Should have a `request` status');
 
         my $exported = {
@@ -350,7 +350,7 @@ sub date_bank : Tests(5) {
 
     $object->hydrate(date_bank => $date);
 
-    isa_ok($object->date_bank, 'DateTime', $object->date_bank);
+    isa_ok($object->date_bank, 'DateTime', '$object->date_bank');
     is($object->date_bank->epoch, $date, 'Date is correct');
     is($object->date_bank->time_zone, $tz, 'Should have the same timezone now');
 }
@@ -608,13 +608,13 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({order_id => $order_id});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({order_id => $order_id})');
 
         my $payment;
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (1st)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (1st)');
         is($payment->id, 'paym_JnU7xyTGJvxRWZuxvj78qz7e', 'Should be expected payment (1st)');
 
         # Only one call for now
@@ -627,12 +627,12 @@ sub list : Tests(136) {
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (2nd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (2nd)');
         is($payment->id, 'paym_p5tjCrXHy93xtVtVqvEJoC1c', 'Should be expected payment (2nd)');
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (3rd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (3rd)');
         is($payment->id, 'paym_5IptC9R1Wu2wKBR5cjM2so7k', 'Should be expected payment (3rd)');
 
         # Called a second time as the response says "has more"
@@ -661,7 +661,7 @@ sub list : Tests(136) {
 
         my $failed = Stancer::Payment->list(order_id => $order_id);
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         my $payment = $failed->next();
 
@@ -699,7 +699,7 @@ sub list : Tests(136) {
         throws_ok { Stancer::Payment->list(created => Stancer::Card->new()) } 'Stancer::Exceptions::InvalidSearchCreation', 'Should not accept blessed variable other than DataTime';
         is($@->message, 'Created must be a position integer or a DateTime object.', $message->());
 
-        isa_ok(Stancer::Payment->list(created => time - 1000), 'Stancer::Core::Iterator::Payment', 'Should accept created filter otherwise');
+        isa_ok(Stancer::Payment->list(created => time - 1000), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(created => $created)');
 
         note 'Exceptions - created until';
         # 11 tests
@@ -719,7 +719,7 @@ sub list : Tests(136) {
         throws_ok { Stancer::Payment->list(created => time - 100, created_until => time - 200) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be after created';
         is($@->message, 'Created until can not be before created.', $message->());
 
-        isa_ok(Stancer::Payment->list(created_until => time - 1000), 'Stancer::Core::Iterator::Payment', 'Should accept created filter otherwise');
+        isa_ok(Stancer::Payment->list(created_until => time - 1000), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(created_until => $created_until)');
 
         note 'Exceptions - limit';
         # 7 tests
@@ -733,7 +733,7 @@ sub list : Tests(136) {
         throws_ok { Stancer::Payment->list(limit => random_string(10)) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be an integer';
         is($@->message, 'Limit must be an integer.', $message->());
 
-        isa_ok(Stancer::Payment->list(limit => random_integer(99) + 1), 'Stancer::Core::Iterator::Payment', 'Should accept limit filter otherwise');
+        isa_ok(Stancer::Payment->list(limit => random_integer(99) + 1), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(limit => $limit)');
 
         note 'Exceptions - start';
         # 5 tests
@@ -761,7 +761,7 @@ sub list : Tests(136) {
         throws_ok { Stancer::Payment->list(order_id => random_string(50)) } 'Stancer::Exceptions::InvalidSearchOrderId', 'Order ID must be 36 characters long maximum';
         is($@->message, 'Invalid order ID.', $message->());
 
-        isa_ok(Stancer::Payment->list(order_id => random_string(36)), 'Stancer::Core::Iterator::Payment', 'Should accept order_id filter otherwise');
+        isa_ok(Stancer::Payment->list(order_id => random_string(36)), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         note 'Exceptions - unique_id';
         # 3 tests
@@ -769,7 +769,7 @@ sub list : Tests(136) {
         throws_ok { Stancer::Payment->list(unique_id => random_string(50)) } 'Stancer::Exceptions::InvalidSearchUniqueId', 'Unique ID must be 36 characters long maximum';
         is($@->message, 'Invalid unique ID.', $message->());
 
-        isa_ok(Stancer::Payment->list(unique_id => random_string(36)), 'Stancer::Core::Iterator::Payment', 'Should accept unique_id filter otherwise');
+        isa_ok(Stancer::Payment->list(unique_id => random_string(36)), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(unique_id => $unique_id)');
     }
 
     { # 11 tests
@@ -787,7 +787,7 @@ sub list : Tests(136) {
 
         $failed = Stancer::Payment->list(order_id => random_string(10));
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         dies_ok { $failed->next() } 'Should still die';
         like($@, qr/$error/sm, 'Should have the message passed to die/croak');
@@ -797,7 +797,7 @@ sub list : Tests(136) {
 
         $failed = Stancer::Payment->list(order_id => random_string(10));
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         dies_ok { $failed->next() } 'Not Moo object, should still die';
 
@@ -806,7 +806,7 @@ sub list : Tests(136) {
 
         $failed = Stancer::Payment->list(order_id => random_string(10));
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         dies_ok { $failed->next() } 'Not Throwable object, should still die';
 
@@ -820,7 +820,7 @@ sub list : Tests(136) {
 
         $failed = Stancer::Payment->list(order_id => random_string(10));
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         is($failed->next(), undef, 'Should not throw a not found error');
 
@@ -830,7 +830,7 @@ sub list : Tests(136) {
 
         $failed = Stancer::Payment->list(order_id => random_string(10));
 
-        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         throws_ok { $failed->next() } 'Stancer::Exceptions::Http::Conflict', 'Should still throw a conflict';
 
@@ -853,7 +853,7 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list(%filters);
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should accept every filter in same call');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(%filters)');
 
         $list->next();
 
@@ -878,13 +878,13 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({created => 1_541_586_400, created_until => 1_541_586_569});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(created => $created, created_until => $created_until)');
 
         my $payment;
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (1st)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (1st)');
         is($payment->id, 'paym_JnU7xyTGJvxRWZuxvj78qz7e', 'Should be expected payment (1st)');
 
         # Only one call for now
@@ -897,12 +897,12 @@ sub list : Tests(136) {
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (2nd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (2nd)');
         is($payment->id, 'paym_p5tjCrXHy93xtVtVqvEJoC1c', 'Should be expected payment (2nd)');
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (3rd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (3rd)');
         is($payment->id, 'paym_wQtKq1cnf1mWh6iLE5Ni0Wf1', 'Should be expected payment (3rd)');
 
         $payment = $list->next();
@@ -926,13 +926,13 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({created => $span});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({created => $span})');
 
         my $payment;
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (1st)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (1st)');
         is($payment->id, 'paym_JnU7xyTGJvxRWZuxvj78qz7e', 'Should be expected payment (1st)');
 
         # Only one call for now
@@ -945,12 +945,12 @@ sub list : Tests(136) {
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (2nd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (2nd)');
         is($payment->id, 'paym_p5tjCrXHy93xtVtVqvEJoC1c', 'Should be expected payment (2nd)');
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (3rd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (3rd)');
         is($payment->id, 'paym_wQtKq1cnf1mWh6iLE5Ni0Wf1', 'Should be expected payment (3rd)');
 
         $payment = $list->next();
@@ -974,13 +974,13 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({created => $span});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({created => $span})');
 
         my $payment;
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (1st)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (1st)');
         is($payment->id, 'paym_JnU7xyTGJvxRWZuxvj78qz7e', 'Should be expected payment (1st)');
 
         # Only one call for now
@@ -1012,13 +1012,13 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({created => $span, created_until => $created + 100});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Should return a Payment iterator');
+        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({created => $created, created_until => $created_until})');
 
         my $payment;
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (1st)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (1st)');
         is($payment->id, 'paym_JnU7xyTGJvxRWZuxvj78qz7e', 'Should be expected payment (1st)');
 
         # Only one call for now
@@ -1031,12 +1031,12 @@ sub list : Tests(136) {
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (2nd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (2nd)');
         is($payment->id, 'paym_p5tjCrXHy93xtVtVqvEJoC1c', 'Should be expected payment (2nd)');
 
         $payment = $list->next();
 
-        isa_ok($payment, 'Stancer::Payment', 'Should return a payment object (3rd)');
+        isa_ok($payment, 'Stancer::Payment', '$list->next() (3rd)');
         is($payment->id, 'paym_wQtKq1cnf1mWh6iLE5Ni0Wf1', 'Should be expected payment (3rd)');
 
         $payment = $list->next();
@@ -1292,7 +1292,7 @@ sub pay : Tests(37) {
 
         my $object = Stancer::Payment->pay($amount, 'eur', $card);
 
-        isa_ok($object, 'Stancer::Payment', 'Should return a valid instance');
+        isa_ok($object, 'Stancer::Payment', 'Stancer::Payment->pay($amount, $currency, $card)');
 
         is($object->is_success, 1, 'This payment was a success');
         is($card->id, 'card_xognFbZs935LMKJYeHyCAYUd', 'Card should have updated');
@@ -1336,7 +1336,7 @@ sub pay : Tests(37) {
 
         my $object = Stancer::Payment->pay($amount, 'eur', $sepa);
 
-        isa_ok($object, 'Stancer::Payment', 'Should return a valid instance');
+        isa_ok($object, 'Stancer::Payment', 'Stancer::Payment->pay($amount, $currency, $card)');
 
         is($object->is_success, 1, 'This payment was a success');
         is($sepa->id, 'sepa_oazGliEo6BuqUlyCzE42hcNp', 'Sepa should have updated');
@@ -1394,10 +1394,10 @@ sub populate : Tests(12) {
         my $object = Stancer::Payment->new('paym_SKMLflt8NBATuiUzgvTYqsw5');
 
         if ($key eq 'created') {
-            isa_ok($object->created, 'DateTime', 'created should trigger populate and create an instance');
+            isa_ok($object->created, 'DateTime', '$object->created');
             is($object->created->epoch, $props{$key}, 'created should have right value');
         } elsif ($key eq 'card') {
-            isa_ok($object->card, 'Stancer::Card', 'card should trigger populate and create an instance');
+            isa_ok($object->card, 'Stancer::Card', '$object->card');
             is($object->card->id, $props{$key}, 'created should have right value');
         } else {
             is($object->$key, $props{$key}, $key . ' should trigger populate');
@@ -1453,7 +1453,7 @@ sub refund : Tests(41) {
 
         # First refund
 
-        isa_ok($payment->refund($amount_1), 'Stancer::Payment', 'Should return itself');
+        isa_ok($payment->refund($amount_1), 'Stancer::Payment', '$payment->refund($amount)');
 
         $refunds = $payment->refunds;
 
@@ -1477,7 +1477,7 @@ sub refund : Tests(41) {
 
         # Second refund, without amount
 
-        isa_ok($payment->refund(), 'Stancer::Payment', 'Should return itself');
+        isa_ok($payment->refund(), 'Stancer::Payment', '$payment->refund()');
 
         $refunds = $payment->refunds;
 
@@ -1633,8 +1633,8 @@ sub return_url : Tests(4) {
     dies_ok { $object->return_url($http_return) } 'Throw error for non-HTTPS URL';
 }
 
-sub send_global : Tests(232) {
-    { # 41 tests
+sub send_global : Tests(221) {
+    { # 40 tests
         note 'With card';
 
         my $object = Stancer::Payment->new();
@@ -1718,7 +1718,7 @@ sub send_global : Tests(232) {
         is($object->response, '00', 'Should have a response code');
         is($object->status, 'to_capture', 'Should have a status');
 
-        isa_ok($object->customer, 'Stancer::Customer', 'Should have created a customer');
+        isa_ok($object->customer, 'Stancer::Customer', '$object->customer');
         # send will not do it, we check it because we fake a return containing a customer
 
         is($object->customer->id, 'cust_9Cle7TXKkjhwqcWx4Kl5cQYk', 'Customer should have an id');
@@ -1776,7 +1776,7 @@ sub send_global : Tests(232) {
         $mock_request->unmock('content');
     }
 
-    { # 35 tests
+    { # 26 tests
         note 'With SEPA';
 
         my $object = Stancer::Payment->new();
@@ -1787,6 +1787,9 @@ sub send_global : Tests(232) {
         my $name = random_string(10);
         my $bic = 'ILADFRPP'; # From fixtures
         my $iban = 'FR39 0000 0000 0000 0026 06'; # From fixtures
+        my $spaceless = $iban;
+
+        $spaceless =~s/\s//gsm;
 
         $sepa->hydrate({
             name => $name,
@@ -1841,7 +1844,7 @@ sub send_global : Tests(232) {
         is($object->response, '00', 'Should have a response code');
         is($object->status, 'to_capture', 'Should have a status');
 
-        isa_ok($object->customer, 'Stancer::Customer', 'Should have created a customer');
+        isa_ok($object->customer, 'Stancer::Customer', '$object->customer');
         # send will not do it, we check it because we fake a return containing a customer
 
         is($object->customer->id, 'cust_9Cle7TXKkjhwqcWx4Kl5cQYk', 'Customer should have an id');
@@ -1875,9 +1878,9 @@ sub send_global : Tests(232) {
             is($data->{currency}, lc $currency, 'Should have passed "currency"');
 
             is(ref $data->{sepa}, 'HASH', 'Should have passed "sepa"');
-            is($data->{sepa}->{name}, $name, 'Card should have "name" property');
-            is($data->{sepa}->{bic}, $bic, 'Card should have "bic" property');
-            is($data->{sepa}->{iban}, $iban, 'Card should have "iban" property');
+            is($data->{sepa}->{name}, $name, 'SEPA should have "name" property');
+            is($data->{sepa}->{bic}, $bic, 'SEPA should have "bic" property');
+            is($data->{sepa}->{iban}, $spaceless, 'SEPA should have "iban" property');
 
             is(not(defined $data->{auth}), 1, 'Should not have passed "auth"');
             is(not(defined $data->{device}), 1, 'Should not have passed "device"');
@@ -2018,7 +2021,7 @@ sub send_global : Tests(232) {
         is($object->response, undef, 'Should not have a response code');
         is($object->status, undef, 'Should not have a status');
 
-        isa_ok($object->customer, 'Stancer::Customer', 'Should have created a customer');
+        isa_ok($object->customer, 'Stancer::Customer', '$object->customer');
         # send will not do it, we check it because we fake a return containing a customer
 
         is($object->customer->id, 'cust_bZ7e17VDlD252dkgHg7JJgBa', 'Customer should have an id');
@@ -2215,7 +2218,7 @@ sub send_global : Tests(232) {
         is($object->response, undef, 'Should not have a response code');
         is($object->status, undef, 'Should not have a status');
 
-        isa_ok($object->customer, 'Stancer::Customer', 'Should have created a customer');
+        isa_ok($object->customer, 'Stancer::Customer', '$object->customer');
         # send will not do it, we check it because we fake a return containing a customer
 
         is($object->customer->id, 'cust_bZ7e17VDlD252dkgHg7JJgBa', 'Customer should have an id');
@@ -2274,7 +2277,7 @@ sub send_global : Tests(232) {
         is(scalar @{ $config->calls }, $nb_calls, 'No call list without debug mode');
     }
 
-    { # 35 tests
+    { # 34 tests
         note 'Without authentication, device or environment variables to create a device';
 
         my $config = Stancer::Config->init();
@@ -2341,7 +2344,7 @@ sub send_global : Tests(232) {
         is($object->response, '00', 'Should have a response code');
         is($object->status, 'to_capture', 'Should have a status');
 
-        isa_ok($object->customer, 'Stancer::Customer', 'Should have created a customer');
+        isa_ok($object->customer, 'Stancer::Customer', '$object->customer');
         # send will not do it, we check it because we fake a return containing a customer
 
         is($object->customer->id, 'cust_9Cle7TXKkjhwqcWx4Kl5cQYk', 'Customer should have an id');
@@ -2437,7 +2440,7 @@ sub send_global : Tests(232) {
         note 'Validate issue #3';
 
         my ($sec, $min, $hour, $mday, $mon, $y, $wday, $yday, $isdst) = localtime;
-        my $exp_year = random_integer(15) + $y + 1900;
+        my $exp_year = random_integer(1, 15) + $y + 1900;
         my $exp_month = random_integer(1, 12);
 
         my $card = Stancer::Card->new(

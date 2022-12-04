@@ -44,7 +44,7 @@ sub auth : Tests(14) {
 
         $object->auth($return_url);
 
-        isa_ok($object->auth, 'Stancer::Auth', 'Should create an Auth instance');
+        isa_ok($object->auth, 'Stancer::Auth', '$object->auth');
         is($object->auth->return_url, $return_url, 'Should update `return_url` attribute');
         is($object->auth->status, Stancer::Auth::Status::REQUEST, 'Should have a `request` status');
 
@@ -67,7 +67,7 @@ sub auth : Tests(14) {
 
         $object->auth($true);
 
-        isa_ok($object->auth, 'Stancer::Auth', 'Should create an Auth instance');
+        isa_ok($object->auth, 'Stancer::Auth', '$object->auth');
         is($object->auth->status, Stancer::Auth::Status::REQUEST, 'Should have a `request` status');
 
         my $exported = {

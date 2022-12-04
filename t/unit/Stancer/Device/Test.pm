@@ -36,8 +36,8 @@ sub instanciate : Tests(10) {
         user_agent => $agent,
     );
 
-    isa_ok($object, 'Stancer::Device', 'Should return current instance');
-    isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+    isa_ok($object, 'Stancer::Device', 'Stancer::Device->new(foo => "bar")');
+    isa_ok($object, 'Stancer::Core::Object', 'Stancer::Device->new(foo => "bar")');
 
     is($object->city, $city, 'Should add a value for `city` property');
     is($object->country, $country, 'Should add a value for `country` property');

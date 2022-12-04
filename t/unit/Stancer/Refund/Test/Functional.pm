@@ -52,7 +52,7 @@ sub refund : Tests(38) {
         throws_ok { $payment->refund(random_integer(50, $amount)) } 'Stancer::Exceptions::Http::Conflict', 'Partial refunds are impossible on not captured payment';
         is($@->message, 'Payment cannot be partially refunded before it has been captured', 'Check exception message');
 
-        isa_ok($payment->refund(), 'Stancer::Payment');
+        isa_ok($payment->refund(), 'Stancer::Payment', '$payment->refund()');
         is($payment->status, Stancer::Payment::Status::CANCELED, 'Payment is now canceled');
 
         my $refunds = $payment->refunds();
@@ -104,7 +104,7 @@ sub refund : Tests(38) {
 
         # First refund
 
-        isa_ok($payment->refund($amount_1), 'Stancer::Payment');
+        isa_ok($payment->refund($amount_1), 'Stancer::Payment', '$payment->refund($amount)');
 
         $refunds = $payment->refunds();
 
@@ -117,7 +117,7 @@ sub refund : Tests(38) {
 
         # Second refund
 
-        isa_ok($payment->refund($amount_2), 'Stancer::Payment');
+        isa_ok($payment->refund($amount_2), 'Stancer::Payment', '$payment->refund($amount)');
 
         $refunds = $payment->refunds();
 
@@ -134,7 +134,7 @@ sub refund : Tests(38) {
 
         # Full refund
 
-        isa_ok($payment->refund(), 'Stancer::Payment');
+        isa_ok($payment->refund(), 'Stancer::Payment', '$payment->refund()');
 
         $refunds = $payment->refunds();
 

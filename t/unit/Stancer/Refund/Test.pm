@@ -15,8 +15,8 @@ sub instanciate : Tests(8) {
     {
         my $object = Stancer::Refund->new();
 
-        isa_ok($object, 'Stancer::Refund', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Refund', 'Stancer::Refund->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Refund->new()');
 
         ok($object->does('Stancer::Role::Amount::Write'), 'Should use Stancer::Role::Amount::Write');
     }
@@ -32,7 +32,7 @@ sub instanciate : Tests(8) {
             payment => $payment,
         );
 
-        isa_ok($object, 'Stancer::Refund', 'Should return current instance');
+        isa_ok($object, 'Stancer::Refund', 'Stancer::Refund->new(foo => "bar")');
 
         is($object->id, $id, 'Should add a value for `id` property');
 
@@ -64,7 +64,7 @@ sub date_bank : Tests(5) {
 
     $object->hydrate(date_bank => $date);
 
-    isa_ok($object->date_bank, 'DateTime', $object->date_bank);
+    isa_ok($object->date_bank, 'DateTime', '$object->date_bank');
     is($object->date_bank->epoch, $date, 'Date is correct');
     is($object->date_bank->time_zone, $tz, 'Should have the same timezone now');
 }
@@ -85,7 +85,7 @@ sub date_refund : Tests(5) {
 
     $object->hydrate(date_refund => $date);
 
-    isa_ok($object->date_refund, 'DateTime', $object->date_refund);
+    isa_ok($object->date_refund, 'DateTime', '$object->date_refund');
     is($object->date_refund->epoch, $date, 'Date is correct');
     is($object->date_refund->time_zone, $tz, 'Should have the same timezone now');
 }

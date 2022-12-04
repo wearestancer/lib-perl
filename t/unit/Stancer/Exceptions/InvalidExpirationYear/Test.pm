@@ -14,10 +14,10 @@ use TestCase;
 sub instance : Tests(6) {
     my $object = Stancer::Exceptions::InvalidExpirationYear->new();
 
-    isa_ok($object, 'Stancer::Exceptions::InvalidExpirationYear', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::InvalidCardExpiration', 'Should be an invalid card expiration exception');
-    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Should be an invalid argument exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::InvalidExpirationYear', 'Stancer::Exceptions::InvalidExpirationYear->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidCardExpiration', 'Stancer::Exceptions::InvalidExpirationYear->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Stancer::Exceptions::InvalidExpirationYear->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::InvalidExpirationYear->new()');
 
     is($object->message, 'Expiration year is invalid.', 'Has default message');
     is($object->log_level, 'debug', 'Has a log level');

@@ -15,7 +15,7 @@ use Stancer::Core::Object::Stub;
 sub instanciate : Test {
     my $object = Stancer::Core::Object->new;
 
-    isa_ok($object, 'Stancer::Core::Object');
+    isa_ok($object, 'Stancer::Core::Object', 'Stancer::Core::Object->new()');
 }
 
 sub created : Tests(11) {
@@ -31,7 +31,7 @@ sub created : Tests(11) {
 
     my $dt = $object->created;
 
-    isa_ok($dt, 'DateTime', 'Should now return a DateTime object');
+    isa_ok($dt, 'DateTime', '$object->created');
 
     is($dt->year(), $ref->year(), 'Should have same year');
     is($dt->month(), $ref->month(), 'Should have same month');
@@ -67,7 +67,7 @@ sub del : Tests(24) {
         $mock_response->set_always(decoded_content => undef);
         $mock_ua->clear();
 
-        isa_ok($object->del(), 'Stancer::Core::Object::Stub', 'Return itself');
+        isa_ok($object->del(), 'Stancer::Core::Object::Stub', '$object->del()');
 
         is($mock_ua->called('request'), 1, 'LWP::UserAgent was used');
 
@@ -99,7 +99,7 @@ sub del : Tests(24) {
         $mock_response->set_always(decoded_content => encode_json {string => $string});
         $mock_ua->clear();
 
-        isa_ok($object->del(), 'Stancer::Core::Object::Stub', 'Return itself');
+        isa_ok($object->del(), 'Stancer::Core::Object::Stub', '$object->del()');
 
         is($mock_ua->called('request'), 1, 'LWP::UserAgent was used');
 
@@ -130,7 +130,7 @@ sub del : Tests(24) {
         $mock_response->set_always(decoded_content => undef);
         $mock_ua->clear();
 
-        isa_ok($object->del(), 'Stancer::Core::Object::Stub', 'Return itself');
+        isa_ok($object->del(), 'Stancer::Core::Object::Stub', '$object->del()');
 
         is($mock_ua->called('request'), 0, 'LWP::UserAgent was not used');
 
@@ -205,7 +205,7 @@ sub hydrate : Tests(13) {
     my $id = random_string(29);
     my $object = Stancer::Core::Object::Stub->new();
 
-    isa_ok($object->hydrate(id => $id, foo => 'bar'), 'Stancer::Core::Object', 'Return itself');
+    isa_ok($object->hydrate(id => $id, foo => 'bar'), 'Stancer::Core::Object', '$object->hydrate(foo => "bar")');
 
     is($object->id, $id, 'Hydrate should add a value to ID');
 
@@ -213,7 +213,7 @@ sub hydrate : Tests(13) {
 
     $id = random_string(29);
 
-    isa_ok($object->hydrate({id => $id}), 'Stancer::Core::Object', 'Should work with an HASHREF too');
+    isa_ok($object->hydrate({id => $id}), 'Stancer::Core::Object', '$object->hydrate({foo => "bar"})');
 
     is($object->id, $id, 'Hydrate should add a value to ID');
 
@@ -225,7 +225,7 @@ sub hydrate : Tests(13) {
 
     $object->hydrate(card => {number => $number});
 
-    isa_ok($object->card, 'Stancer::Card', 'Should create an instance of Card');
+    isa_ok($object->card, 'Stancer::Card', '$object->card');
 
     my $card = $object->card;
 
@@ -297,12 +297,12 @@ sub populate : Tests(11) {
     $mock_response->set_always(decoded_content => encode_json \%data);
     $mock_ua->clear();
 
-    isa_ok(Stancer::Core::Object::Stub->new->populate(), 'Stancer::Core::Object::Stub', 'Return itself even if no ID was provided');
-    isa_ok(Stancer::Core::Object->new($id)->populate(), 'Stancer::Core::Object', 'Return itself without call when got an ID but no endpoint');
+    isa_ok(Stancer::Core::Object::Stub->new->populate(), 'Stancer::Core::Object::Stub', 'Stancer::Core::Object::Stub->new->populate()');
+    isa_ok(Stancer::Core::Object->new($id)->populate(), 'Stancer::Core::Object', 'Stancer::Core::Object->new($id)->populate()');
 
     is($mock_ua->called('request'), 0, 'LWP::UserAgent was not used');
 
-    isa_ok($object->populate(), 'Stancer::Core::Object::Stub', 'Return itself');
+    isa_ok($object->populate(), 'Stancer::Core::Object::Stub', '$object->populate()');
 
     is($mock_ua->called('request'), 1, 'LWP::UserAgent was used');
 
@@ -362,7 +362,7 @@ sub save : Tests(17) {
         $mock_response->set_always(decoded_content => encode_json \%data);
         $mock_ua->clear();
 
-        isa_ok($object->save(), 'Stancer::Core::Object::Stub', 'Return itself');
+        isa_ok($object->save(), 'Stancer::Core::Object::Stub', '$object->save()');
 
         is($mock_ua->called('request'), 1, 'LWP::UserAgent was used');
 
@@ -424,7 +424,7 @@ sub send_global : Tests(33) {
         $mock_response->set_always(decoded_content => encode_json \%data);
         $mock_ua->clear();
 
-        isa_ok($object->send(), 'Stancer::Core::Object::Stub', 'Return itself');
+        isa_ok($object->send(), 'Stancer::Core::Object::Stub', '$object->send()');
 
         is($mock_ua->called('request'), 1, 'LWP::UserAgent was used');
 
@@ -530,7 +530,7 @@ sub send_for_an_update : Tests(15) {
     $mock_response->set_always(decoded_content => undef);
     $mock_ua->clear();
 
-    isa_ok($object->send(), 'Stancer::Core::Object::Stub', 'Return itself');
+    isa_ok($object->send(), 'Stancer::Core::Object::Stub', '$object->send()');
 
     my $messages = $log->msgs;
 

@@ -79,8 +79,8 @@ sub factory : Tests(115) {
 sub instance : Tests(4) {
     my $object = Stancer::Exceptions::Http->new();
 
-    isa_ok($object, 'Stancer::Exceptions::Http', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::Http', 'Stancer::Exceptions::Http->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::Http->new()');
 
     is($object->message, 'HTTP error', 'Has default message');
     is($object->log_level, 'warning', 'Has a log level');
@@ -97,7 +97,7 @@ sub request : Tests(4) {
         my $request = HTTP::Request->new;
         my $object = Stancer::Exceptions::Http->new(request => $request);
 
-        isa_ok($object->request, 'HTTP::Request');
+        isa_ok($object->request, 'HTTP::Request', '$object->request');
         is($object->request, $request);
 
         dies_ok { $object->request($request) } 'Not writable';
@@ -115,7 +115,7 @@ sub response : Tests(4) {
         my $response = HTTP::Response->new;
         my $object = Stancer::Exceptions::Http->new(response => $response);
 
-        isa_ok($object->response, 'HTTP::Response');
+        isa_ok($object->response, 'HTTP::Response', '$object->response');
         is($object->response, $response);
 
         dies_ok { $object->response($response) } 'Not writable';

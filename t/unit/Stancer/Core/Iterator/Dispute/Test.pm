@@ -12,8 +12,8 @@ use TestCase;
 sub instanciate : Tests(2) {
     my $object = Stancer::Core::Iterator::Dispute->new();
 
-    isa_ok($object, 'Stancer::Core::Iterator::Dispute', 'Should return current instance');
-    isa_ok($object, 'Stancer::Core::Iterator', 'Should be a child of Core::Iterator');
+    isa_ok($object, 'Stancer::Core::Iterator::Dispute', 'Stancer::Core::Iterator::Dispute->new()');
+    isa_ok($object, 'Stancer::Core::Iterator', 'Stancer::Core::Iterator::Dispute->new()');
 }
 
 sub test_create_element : Tests(4) {

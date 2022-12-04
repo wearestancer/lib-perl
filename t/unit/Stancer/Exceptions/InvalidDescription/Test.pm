@@ -14,9 +14,9 @@ use TestCase;
 sub instance : Tests(5) {
     my $object = Stancer::Exceptions::InvalidDescription->new();
 
-    isa_ok($object, 'Stancer::Exceptions::InvalidDescription', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Should be an invalid argument exception too');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::InvalidDescription', 'Stancer::Exceptions::InvalidDescription->new()');
+    isa_ok($object, 'Stancer::Exceptions::InvalidArgument', 'Stancer::Exceptions::InvalidDescription->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::InvalidDescription->new()');
 
     is($object->message, 'Invalid description.', 'Has default message');
     is($object->log_level, 'debug', 'Has a log level');

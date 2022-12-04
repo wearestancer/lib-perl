@@ -19,7 +19,7 @@ use List::MoreUtils ();
 sub instanciate : Test {
     my $object = Stancer::Core::Request->new;
 
-    isa_ok($object, 'Stancer::Core::Request');
+    isa_ok($object, 'Stancer::Core::Request', 'Stancer::Core::Request->new()');
 }
 
 sub del : Tests(10) {

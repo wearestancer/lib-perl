@@ -14,9 +14,9 @@ use TestCase;
 sub instance : Tests(5) {
     my $object = Stancer::Exceptions::Http::ServerSide->new();
 
-    isa_ok($object, 'Stancer::Exceptions::Http::ServerSide', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::Http', 'Should be an HTTP exception');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::Http::ServerSide', 'Stancer::Exceptions::Http::ServerSide->new()');
+    isa_ok($object, 'Stancer::Exceptions::Http', 'Stancer::Exceptions::Http::ServerSide->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::Http::ServerSide->new()');
 
     is($object->message, 'Server error', 'Has default message');
     is($object->log_level, 'critical', 'Has a log level');

@@ -17,8 +17,8 @@ sub instanciate : Tests(9) {
 
         my $object = Stancer::Auth->new();
 
-        isa_ok($object, 'Stancer::Auth', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Auth', 'Stancer::Auth->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Auth->new()');
 
         my $data = $object->TO_JSON();
 
@@ -38,8 +38,8 @@ sub instanciate : Tests(9) {
         };
         my $object = Stancer::Auth->new($data);
 
-        isa_ok($object, 'Stancer::Auth', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Auth', 'Stancer::Auth->new($data)');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Auth->new($data)');
 
         is($object->redirect_url, $redirect_url, 'Should add a value for `redirect_url` property');
         is($object->return_url, $return_url, 'Should add a value for `return_url` property');

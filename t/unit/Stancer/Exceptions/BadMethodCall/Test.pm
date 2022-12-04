@@ -14,8 +14,8 @@ use TestCase;
 sub instance : Tests(4) {
     my $object = Stancer::Exceptions::BadMethodCall->new();
 
-    isa_ok($object, 'Stancer::Exceptions::BadMethodCall', 'Should return current instance');
-    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Should be throwable');
+    isa_ok($object, 'Stancer::Exceptions::BadMethodCall', 'Stancer::Exceptions::BadMethodCall->new()');
+    isa_ok($object, 'Stancer::Exceptions::Throwable', 'Stancer::Exceptions::BadMethodCall->new()');
 
     is($object->message, 'Bad method call.', 'Has default message');
     is($object->log_level, 'critical', 'Has a log level');

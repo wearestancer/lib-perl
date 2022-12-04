@@ -32,7 +32,7 @@ sub instanciate : Tests(2) {
 
     my $object = Stancer::Config->new(%args);
 
-    isa_ok($object, 'Stancer::Config');
+    isa_ok($object, 'Stancer::Config', 'Stancer::Config->new(%args)');
 
     cmp_deeply($object, noclass({
         calls => [],
@@ -54,16 +54,16 @@ sub calls : Tests(18) {
     { # 8 tests
         note 'Without exception';
 
-        isa_ok($config->calls, 'ARRAY', 'Should return an ARRAY');
+        isa_ok($config->calls, 'ARRAY', '$config->calls');
         is(scalar @{ $config->calls }, 0, 'Should be empty');
 
         $mock_ua->clear();
 
         $request->get($object);
 
-        isa_ok($config->calls, 'ARRAY', 'Should still return an ARRAY');
+        isa_ok($config->calls, 'ARRAY', '$config->calls');
         is(scalar @{ $config->calls }, 1, 'Should have one call registered');
-        isa_ok($config->calls->[0], 'Stancer::Core::Request::Call', 'That should contain a call instance');
+        isa_ok($config->calls->[0], 'Stancer::Core::Request::Call', '$config->calls->[0]');
 
         is($config->calls->[0]->request, $mock_request, 'The call should have a request');
         is($config->calls->[0]->response, $mock_response, 'The call should have a response');
@@ -73,7 +73,7 @@ sub calls : Tests(18) {
     { # 10 tests
         note 'With exception';
 
-        isa_ok($config->calls, 'ARRAY', 'Should return an ARRAY');
+        isa_ok($config->calls, 'ARRAY', '$config->calls');
         is(scalar @{ $config->calls }, 1, 'Should still have previous call');
 
         $mock_ua->clear();
@@ -85,9 +85,9 @@ sub calls : Tests(18) {
 
         my $exception = $@; ## no critic (ProhibitPunctuationVars)
 
-        isa_ok($config->calls, 'ARRAY', 'Should still return an ARRAY');
+        isa_ok($config->calls, 'ARRAY', '$config->calls');
         is(scalar @{ $config->calls }, 2, 'Should have one more call registered');
-        isa_ok($config->calls->[1], 'Stancer::Core::Request::Call', 'That should contain a call instance');
+        isa_ok($config->calls->[1], 'Stancer::Core::Request::Call', '$config->calls->[1]');
 
         is($config->calls->[1]->request, $mock_request, 'The call should have a request');
         is($config->calls->[1]->response, $mock_response, 'The call should have a response');
@@ -139,12 +139,12 @@ sub default_timezone : Tests(5) {
 
     $object->default_timezone($tz);
 
-    isa_ok($object->default_timezone, 'DateTime::TimeZone', 'Should be updated with a TimeZone');
+    isa_ok($object->default_timezone, 'DateTime::TimeZone', '$config->default_timezone');
     is($object->default_timezone, $tz, 'Should be the same instance');
 
     $object->default_timezone('Europe/Paris');
 
-    isa_ok($object->default_timezone, 'DateTime::TimeZone', 'Should be updated with a TimeZone');
+    isa_ok($object->default_timezone, 'DateTime::TimeZone', '$config->default_timezone');
     cmp_deeply($object->default_timezone, $tz, 'Should be equal to a new instance');
 }
 
@@ -372,7 +372,7 @@ sub lwp : Tests(2) {
     my $object = Stancer::Config->new();
     my $default = $object->lwp;
 
-    isa_ok($default, 'LWP::UserAgent', 'Should return a valid instance of LWP::UserAgent by default');
+    isa_ok($default, 'LWP::UserAgent', '$config->lwp');
 
     my $ua = LWP::UserAgent->new();
 

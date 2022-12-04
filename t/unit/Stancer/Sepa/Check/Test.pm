@@ -14,8 +14,8 @@ sub instanciate : Tests(2) {
     { # 2 tests
         my $object = Stancer::Sepa::Check->new();
 
-        isa_ok($object, 'Stancer::Sepa::Check', 'Should return current instance');
-        isa_ok($object, 'Stancer::Core::Object', 'Should be a child of Core::Object');
+        isa_ok($object, 'Stancer::Sepa::Check', 'Stancer::Sepa::Check->new()');
+        isa_ok($object, 'Stancer::Core::Object', 'Stancer::Sepa::Check->new()');
     }
 }
 
@@ -61,7 +61,7 @@ sub sepa : Tests(5) {
         my $id = random_string(29);
         my $object = Stancer::Sepa::Check->new($id);
 
-        isa_ok($object->sepa, 'Stancer::Sepa', 'Should return a Sepa instance');
+        isa_ok($object->sepa, 'Stancer::Sepa', 'Stancer::Sepa::Check->new($id)');
         is($object->sepa->id, $id, 'Should have the same id');
 
         throws_ok { $object->sepa($id) } qr/sepa is a read-only accessor/sm, 'Not writable';
