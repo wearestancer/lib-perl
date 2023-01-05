@@ -332,7 +332,7 @@ has stest => (
 
 =attr C<timeout>
 
-Read/Write integer, default 5.
+Read/Write integer.
 
 Timeout for every API call
 
@@ -341,7 +341,6 @@ Timeout for every API call
 has timeout => (
     is => 'rw',
     isa => Int,
-    default => 5,
     predicate => 1,
 );
 

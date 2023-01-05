@@ -582,7 +582,7 @@ sub timeout : Tests(2) {
     my $object = Stancer::Config->new();
     my $timeout = floor(rand 100) * 100;
 
-    is($object->timeout, 5, '5 by default');
+    is($object->timeout, undef, '`undef` by default');
 
     $object->timeout($timeout);
 

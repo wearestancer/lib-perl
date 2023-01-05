@@ -144,7 +144,7 @@ sub _request {
     my $config = Stancer::Config->init();
     my $ua = $config->lwp;
 
-    $ua->timeout($config->timeout);
+    $ua->timeout($config->timeout) if defined $config->timeout;
     $ua->agent($config->user_agent);
 
     $request->header('Content-Type' => 'application/json');
