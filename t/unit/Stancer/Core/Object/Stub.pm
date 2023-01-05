@@ -93,7 +93,7 @@ sub test_only_add_modified {
 sub test_only_reset_modified {
     my $this = shift;
 
-    $this->_set__modified([]);
+    $this->_set__modified({});
 
     return $this;
 }

@@ -192,7 +192,7 @@ sub send_global : Tests(12) {
     my @attrs = qw(name email mobile);
 
     foreach my $attr (@attrs) {
-        splice @{$object->_modified}; # Do not try this at home, this will reset modified
+        $object->_reset_modified(); # Do not do this at home, this will reset modified
 
         $mock_ua->clear();
         $object->$attr(random_string(10));
@@ -229,7 +229,7 @@ sub toJSON : Tests(3) {
         id => $id,
     });
 
-    splice @{$object->_modified}; # Do not do this at home
+    $object->_reset_modified(); # Do not do this at home
 
     eq_or_diff($object->toJSON(), q/"/ . $id . q/"/, 'If an ID is present, everything else is skipped');
 

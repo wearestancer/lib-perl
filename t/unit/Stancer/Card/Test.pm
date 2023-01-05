@@ -348,7 +348,7 @@ sub toJSON : Tests(3) {
         id => $id,
     });
 
-    splice @{$object->_modified}; # Do not do this at home
+    $object->_reset_modified(); # Do not do this at home
 
     eq_or_diff($object->toJSON(), q/"/ . $id . q/"/, 'If an ID is present, everything else is skipped');
 

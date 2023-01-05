@@ -7,12 +7,12 @@ use warnings;
 # ABSTRACT: Basic API object
 # VERSION
 
-use Stancer::Core::Types qw(coerce_datetime ArrayRef Bool Char HashRef InstanceOf Maybe Str);
+use Stancer::Core::Types qw(coerce_datetime ArrayRef Bool Char HashRef InstanceOf Int Maybe Str);
 
 use Carp;
 use Stancer::Config;
 use Stancer::Core::Request;
-use List::MoreUtils qw(any first_index one);
+use List::MoreUtils qw(any first_index);
 use Log::Any qw($log);
 use JSON;
 use Scalar::Util qw(blessed);
@@ -179,7 +179,7 @@ has _json_ignore => (
 
 =begin comment
 
-Read/Write arrayref of string.
+Read/Write hashref of string.
 
 Indicate if the current object has been modified.
 
@@ -191,16 +191,15 @@ Use with care.
 
 has _modified => (
     is => 'rwp',
-    isa => ArrayRef[Str],
-    default => sub{ [] },
+    isa => HashRef[Int],
+    default => sub{ return {} },
 );
 
 sub _add_modified {
     my ($this, $name) = @_;
 
-    $this->_set__modified([]) unless defined $this->_modified; # I don't know why but I sometimes get undef
-
-    push @{$this->_modified}, $name unless one { $_ eq $name } @{$this->_modified};
+    $this->_set__modified({}) unless defined $this->_modified; # I don't know why but I sometimes get undef
+    $this->_modified->{$name} = 1;
 
     return $this;
 }
@@ -208,7 +207,7 @@ sub _add_modified {
 sub _reset_modified { ## no critic (RequireFinalReturn)
     my $this = shift;
 
-    $this->_set__modified([]);
+    $this->_set__modified({});
 
     for my $attr (@{$this->_inner_objects}) {
         $this->$attr->_reset_modified() if defined $this->$attr;
@@ -292,7 +291,7 @@ Indicate if the current object is modified or not.
 
 sub is_modified {
     my $this = shift;
-    my $is_modified = scalar @{$this->_modified} > 0;
+    my $is_modified = scalar keys %{$this->_modified} > 0;
 
     return $is_modified if $is_modified;
 
@@ -615,7 +614,7 @@ sub TO_JSON {
     my @properties = keys %{$this};
 
     if ($this->id) {
-        @properties = @{$this->_modified};
+        @properties = keys %{$this->_modified};
 
         return $this->id() if $this->is_not_modified;
     }

@@ -82,7 +82,7 @@ sub bic : Tests(19) {
     is($object->bic, undef, 'Undefined by default');
 
     foreach my $bic (@bics) {
-        splice @{$object->_modified}; # Bad method to clean modified list
+        $object->_reset_modified(); # Do not do this at home
 
         $object->bic($bic);
 
@@ -281,7 +281,7 @@ sub iban : Tests(52) {
 
         my $last4 = substr $cleaned, -4;
 
-        splice @{$object->_modified}; # Bad method to clean modified list
+        $object->_reset_modified(); # Do not do this at home
 
         $object->iban($iban);
 
