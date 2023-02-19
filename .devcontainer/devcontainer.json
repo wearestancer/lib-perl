@@ -1,0 +1,28 @@
+{
+	"name": "Stancer Perl library",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "workspace",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"bayashi.perlcpanfile",
+				"d9705996.perl-toolbox",
+				"editorconfig.editorconfig",
+				"mortenhenriksen.perl-debug"
+			],
+			"settings": {
+				"files.associations": {
+					"cpanfile": "cpanfile"
+				},
+				"perl-toolbox.lint.perlcriticProfile": "${containerWorkspaceFolder}/.perlcriticrc",
+				"perl-toolbox.syntax.includePaths": [
+					"${containerWorkspaceFolder}/lib",
+					"${containerWorkspaceFolder}/t/unit"
+				]
+			}
+		}
+	},
+	"postAttachCommand": "( dzil authordeps --missing ; dzil listdeps --missing --develop ; ) | sudo cpm install -g -",
+	"remoteUser": "vscode"
+}

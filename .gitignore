@@ -23,3 +23,6 @@ Stancer-*.tar.gz
 # macOS specific files
 .DS_Store
 ._*
+
+# Local
+.env

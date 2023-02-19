@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  workspace:
+    build:
+      args:
+        - DOCKER_REGISTRY
+        - PAUSE_LOGIN
+        - PAUSE_PASSWORD
+        - PERL_VERSION
+      context: .
+      dockerfile: ./Dockerfile
+      target: main
+
+    volumes:
+      - ..:/workspace:cached
