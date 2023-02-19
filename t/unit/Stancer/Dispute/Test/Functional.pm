@@ -19,7 +19,7 @@ sub list : Tests(4) {
     { # 4 tests
         note 'Basic tests';
 
-        my @currencies = shuffle(qw/usd eur gbp/);
+        my @currencies = shuffle(qw(usd eur gbp));
         my @dateparts = localtime;
 
         my $amount = random_integer(50, 9999);

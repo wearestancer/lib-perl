@@ -14,7 +14,7 @@ use DateTime::TimeZone;
 use English qw(-no_match_vars);
 use Stancer::Exceptions::MissingApiKey;
 use LWP::UserAgent;
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed);
 
 use Moo;
 use namespace::clean;
@@ -116,7 +116,7 @@ You may pass a string, it will be used to create a new C<DateTime::TimeZone> ins
 has default_timezone => (
     is => 'rw',
     isa => InstanceOf['DateTime::TimeZone'],
-    coerce  => sub {
+    coerce => sub {
         return $_[0] if not defined $_[0];
         return $_[0] if blessed($_[0]) and $_[0]->isa('DateTime::TimeZone');
         return DateTime::TimeZone->new(name => $_[0]);

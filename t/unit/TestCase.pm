@@ -155,7 +155,7 @@ sub bic_provider { # 9 BIC
     @bics = shuffle(@bics);
 
     return @bics if wantarray;
-    return $bics[0];
+    return shift @bics;
 }
 
 sub card_number_provider { # 36 card numbers
@@ -249,7 +249,7 @@ sub card_number_provider { # 36 card numbers
     @cards = shuffle(@cards);
 
     return @cards if wantarray;
-    return $cards[0];
+    return shift @cards;
 }
 
 sub currencies_for_card_provider {
@@ -257,17 +257,17 @@ sub currencies_for_card_provider {
 }
 
 sub currencies_for_sepa_provider {
-    my @currencies = qw/EUR/;
+    my @currencies = qw(EUR);
 
     return @currencies if wantarray;
-    return $currencies[0];
+    return shift @currencies;
 }
 
 sub currencies_provider {
-    my @currencies = shuffle(qw/AUD CAD CHF DKK EUR GBP JPY NOK PLN SEK USD/);
+    my @currencies = shuffle(qw(AUD CAD CHF DKK EUR GBP JPY NOK PLN SEK USD));
 
     return @currencies if wantarray;
-    return $currencies[0];
+    return shift @currencies;
 }
 
 sub iban_provider { # 17 IBAN
@@ -294,7 +294,7 @@ sub iban_provider { # 17 IBAN
     @ibans = shuffle(@ibans);
 
     return @ibans if wantarray;
-    return $ibans[0];
+    return shift @ibans;
 }
 
 ## no critic (ProhibitLongChainsOfMethodCalls ProhibitStringyEval RequireFinalReturn)
@@ -394,7 +394,7 @@ sub ipv4_provider { # 7 addresses
     @ips = shuffle(@ips);
 
     return @ips if wantarray;
-    return $ips[0];
+    return shift @ips;
 }
 
 sub ipv6_provider { # 9 addresses
@@ -416,7 +416,7 @@ sub ipv6_provider { # 9 addresses
     @ips = shuffle(@ips);
 
     return @ips if wantarray;
-    return $ips[0];
+    return shift @ips;
 }
 
 sub valid_card_number_provider {
@@ -460,7 +460,7 @@ sub valid_card_number_provider {
     @cards = shuffle(@cards);
 
     return @cards if wantarray;
-    return $cards[0];
+    return shift @cards;
 }
 
 1;

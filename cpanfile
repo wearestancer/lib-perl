@@ -21,24 +21,24 @@ requires 'Try::Tiny', '0.22';
 suggests 'DateTime::Span';
 
 on 'test' => sub {
-  requires 'Cwd';
-  requires 'DateTime::Span';
-  requires 'Test::Class', '0.50';
-  requires 'Test::MockObject';
-  requires 'Test::MockObject::Extends';
-  requires 'Test::Most', '0.35';
+    requires 'Cwd';
+    requires 'DateTime::Span';
+    requires 'Test::Class', '0.50';
+    requires 'Test::MockObject';
+    requires 'Test::MockObject::Extends';
+    requires 'Test::Most', '0.35';
 };
 
 on 'develop' => sub {
-  requires 'Dist::Zilla::App::Command::cover';
-  requires 'Dist::Zilla::Plugin::ContributorsFromGit';
-  requires 'Dist::Zilla::Plugin::Generate::ManifestSkip';
-  requires 'Dist::Zilla::Plugin::InstallGuide';
-  requires 'Dist::Zilla::Plugin::OurPkgVersion';
-  requires 'Dist::Zilla::Plugin::Test::Pod::Coverage::Configurable';
-  requires 'Pod::Weaver::Section::Bugs', '4.003';
-  requires 'Pod::Weaver::Section::Contributors';
-  requires 'Pod::Weaver::Section::Template', '0.02';
+    requires 'Dist::Zilla::App::Command::cover';
+    requires 'Dist::Zilla::Plugin::ContributorsFromGit';
+    requires 'Dist::Zilla::Plugin::Generate::ManifestSkip';
+    requires 'Dist::Zilla::Plugin::InstallGuide';
+    requires 'Dist::Zilla::Plugin::OurPkgVersion';
+    requires 'Dist::Zilla::Plugin::Test::Pod::Coverage::Configurable';
+    requires 'Pod::Weaver::Section::Bugs', '4.003';
+    requires 'Pod::Weaver::Section::Contributors';
+    requires 'Pod::Weaver::Section::Template', '0.02';
 
-  suggests 'App::Prove::Watch';
+    suggests 'App::Prove::Watch';
 };

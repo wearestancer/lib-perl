@@ -20,7 +20,7 @@ use Stancer::Exceptions::MissingPaymentMethod;
 use DateTime;
 use List::MoreUtils qw(any);
 use Log::Any qw($log);
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed);
 
 use Moo;
 
@@ -113,7 +113,7 @@ has capture => (
     is => 'rw',
     isa => Maybe[Bool],
     builder => sub { $_[0]->_attribute_builder('capture') },
-    coerce  => coerce_boolean(),
+    coerce => coerce_boolean(),
     lazy => 1,
     predicate => 1,
 );
@@ -174,7 +174,7 @@ has customer => (
     is => 'rw',
     isa => Maybe[CustomerInstance],
     builder => sub { $_[0]->_attribute_builder('customer') },
-    coerce  => coerce_instance('Stancer::Customer'),
+    coerce => coerce_instance('Stancer::Customer'),
     lazy => 1,
     predicate => 1,
     trigger => sub { $_[0]->_add_modified('customer') },
@@ -192,7 +192,7 @@ has date_bank => (
     is => 'rwp',
     isa => Maybe[InstanceOf['DateTime']],
     builder => sub { $_[0]->_attribute_builder('date_bank') },
-    coerce  => coerce_datetime(),
+    coerce => coerce_datetime(),
     lazy => 1,
     predicate => 1,
 );

@@ -188,9 +188,6 @@ sub update : Tests(12) {
 
         my $obj = Stancer::Customer->new($id)->populate();
 
-        use Data::Dumper;
-        print Dumper $obj;
-
         is($obj->$attr, $attrs->{$attr}, q/"/ . $attr . '" should have been modified');
     }
 }

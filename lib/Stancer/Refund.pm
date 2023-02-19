@@ -10,7 +10,7 @@ use warnings;
 use Stancer::Core::Types qw(coerce_datetime coerce_instance InstanceOf Maybe PaymentInstance Str);
 
 use Stancer::Payment;
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed);
 
 use Moo;
 use namespace::clean;
@@ -62,7 +62,7 @@ has date_bank => (
     is => 'rwp',
     isa => Maybe[InstanceOf['DateTime']],
     builder => sub { $_[0]->_attribute_builder('date_bank') },
-    coerce  => coerce_datetime(),
+    coerce => coerce_datetime(),
     lazy => 1,
     predicate => 1,
 );
@@ -79,7 +79,7 @@ has date_refund => (
     is => 'rwp',
     isa => Maybe[InstanceOf['DateTime']],
     builder => sub { $_[0]->_attribute_builder('date_refund') },
-    coerce  => coerce_datetime(),
+    coerce => coerce_datetime(),
     lazy => 1,
     predicate => 1,
 );
@@ -96,7 +96,7 @@ has payment => (
     is => 'rw',
     isa => Maybe[PaymentInstance],
     builder => sub { $_[0]->_attribute_builder('payment') },
-    coerce  => coerce_instance('Stancer::Payment'),
+    coerce => coerce_instance('Stancer::Payment'),
     lazy => 1,
     predicate => 1,
     trigger => sub { $_[0]->_add_modified('payment') },

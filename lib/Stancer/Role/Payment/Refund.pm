@@ -49,7 +49,7 @@ has refunds => (
     is => 'rwp',
     isa => ArrayRef[RefundInstance],
     builder => sub { $_[0]->_attribute_builder('refunds') },
-    coerce  => sub {
+    coerce => sub {
         my $data = shift;
         my @refunds = ();
 

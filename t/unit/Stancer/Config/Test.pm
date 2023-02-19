@@ -77,7 +77,7 @@ sub calls : Tests(18) {
         is(scalar @{ $config->calls }, 1, 'Should still have previous call');
 
         $mock_ua->clear();
-        $mock_response->set_false(qw/is_success/);
+        $mock_response->set_false(qw(is_success));
         $mock_response->set_always(decoded_content => undef);
         $mock_response->set_always(code => 409);
 

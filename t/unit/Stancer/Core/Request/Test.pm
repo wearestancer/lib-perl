@@ -33,7 +33,7 @@ sub del : Tests(10) {
 
     $mock_ua->clear();
 
-    $mock_response->set_true(qw/is_success/);
+    $mock_response->set_true(qw(is_success));
     $mock_response->set_always(decoded_content => $content);
 
     is($request->del($object), $content, 'Should return response content');
@@ -98,7 +98,7 @@ sub get : Tests(20) {
     my $object = Stancer::Core::Object->new;
     my $content = random_string(100);
 
-    $mock_response->set_true(qw/is_success/);
+    $mock_response->set_true(qw(is_success));
     $mock_response->set_always(decoded_content => $content);
     $mock_ua->clear();
 
@@ -211,7 +211,7 @@ sub patch : Tests(11) {
 
     $object->string($string);
 
-    $mock_response->set_true(qw/is_success/);
+    $mock_response->set_true(qw(is_success));
     $mock_response->set_always(decoded_content => $content);
 
     is($request->patch($object), $content, 'Should return response content');
@@ -296,7 +296,7 @@ sub post : Tests(11) {
 
     $object->string($string);
 
-    $mock_response->set_true(qw/is_success/);
+    $mock_response->set_true(qw(is_success));
     $mock_response->set_always(decoded_content => $content);
 
     $mock_ua->agent($base_agent);
@@ -363,7 +363,7 @@ sub request_errors : Tests(49) {
     my $object = Stancer::Core::Object->new;
     my $config = Stancer::Config->init;
 
-    $mock_response->set_false(qw/is_success/);
+    $mock_response->set_false(qw(is_success));
     $mock_response->set_always(decoded_content => undef);
 
     my @errors = (
@@ -450,7 +450,7 @@ sub request_errors_message : Tests(14) {
     my $request = Stancer::Core::Request->new;
     my $object = Stancer::Core::Object->new;
 
-    $mock_response->set_false(qw/is_success/);
+    $mock_response->set_false(qw(is_success));
     $mock_response->set_always(code => 400);
 
     my $with_message = {

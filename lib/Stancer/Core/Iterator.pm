@@ -15,7 +15,7 @@ use Stancer::Exceptions::InvalidSearchLimit;
 use Stancer::Exceptions::InvalidSearchStart;
 use Stancer::Exceptions::InvalidSearchUntilCreation;
 use JSON;
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed);
 use Try::Tiny;
 
 use Moo;

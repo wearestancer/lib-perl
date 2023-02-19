@@ -97,6 +97,12 @@ May be an IPv4 (aka 212.27.48.10) or an IPv6 (2a01:e0c:1::1).
 has ip => (
     is => 'rw',
     isa => Maybe[IpAddress],
+    coerce => sub {
+        return if not defined $_[0];
+        return if $_[0] eq '1';
+        return if $_[0] eq q//;
+        return $_[0];
+    },
     trigger => sub { $_[0]->_add_modified('ip') },
 );
 
@@ -125,6 +131,11 @@ Customer's port.
 has port => (
     is => 'rw',
     isa => Maybe[Port],
+    coerce => sub {
+        return if not defined $_[0];
+        return if $_[0] eq q//;
+        return $_[0];
+    },
     trigger => sub { $_[0]->_add_modified('port') },
 );
 

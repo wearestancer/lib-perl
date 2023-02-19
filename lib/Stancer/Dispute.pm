@@ -11,7 +11,7 @@ use Stancer::Core::Types qw(coerce_instance Maybe OrderId PaymentInstance Varcha
 
 use Stancer::Core::Iterator::Dispute;
 use Stancer::Payment;
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed);
 
 use Moo;
 use namespace::clean;
@@ -69,7 +69,7 @@ has payment => (
     is => 'rw',
     isa => Maybe[PaymentInstance],
     builder => sub { $_[0]->_attribute_builder('payment') },
-    coerce  => coerce_instance('Stancer::Payment'),
+    coerce => coerce_instance('Stancer::Payment'),
     lazy => 1,
     predicate => 1,
     trigger => sub { $_[0]->_add_modified('payment') },

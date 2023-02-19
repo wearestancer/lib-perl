@@ -34,7 +34,7 @@ has auth => (
     is => 'rw',
     isa => Maybe[AuthInstance],
     builder => sub { $_[0]->_attribute_builder('auth') },
-    coerce  => sub {
+    coerce => sub {
         return if not defined $_[0];
         return if "$_[0]" eq q/0/ || "$_[0]" eq q//;
         return $_[0] if blessed($_[0]) and blessed($_[0]) eq 'Stancer::Auth';
@@ -74,7 +74,7 @@ has device => (
     is => 'rw',
     isa => Maybe[DeviceInstance],
     builder => sub { $_[0]->_attribute_builder('device') },
-    coerce  => coerce_instance('Stancer::Device'),
+    coerce => coerce_instance('Stancer::Device'),
     lazy => 1,
     predicate => 1,
     trigger => sub { $_[0]->_add_modified('device') },

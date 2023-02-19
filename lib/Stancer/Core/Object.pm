@@ -261,7 +261,7 @@ has created => (
     is => 'rwp',
     isa => Maybe[InstanceOf['DateTime']],
     builder => sub { $_[0]->_attribute_builder('created') },
-    coerce  => coerce_datetime(),
+    coerce => coerce_datetime(),
     lazy => 1,
     predicate => 1,
 );

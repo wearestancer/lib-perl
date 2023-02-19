@@ -1,9 +1,0 @@
-
-.update-coverage:
-  extends: .coverage-bases
-
-  script:
-    - dzil cover -select_re Stancer 2>&1 | grep '^Total ' | awk '{ print $NF * 100 }' > coverage
-
-  only:
-    - develop

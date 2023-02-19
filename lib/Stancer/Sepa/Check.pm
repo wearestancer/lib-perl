@@ -38,7 +38,7 @@ has date_birth => (
     is => 'rwp',
     isa => Maybe[Bool],
     builder => sub { $_[0]->_attribute_builder('date_birth') },
-    coerce  => coerce_boolean(),
+    coerce => coerce_boolean(),
     lazy => 1,
     predicate => 1,
 );

@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Stancer::Card;
-use Scalar::Util qw/blessed/;
+use Scalar::Util qw(blessed);
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);
@@ -46,7 +46,7 @@ has boolean2 => (
 has date => (
     is => 'rw',
     isa => InstanceOf['DateTime'],
-    coerce  => coerce_datetime(),
+    coerce => coerce_datetime(),
     trigger => sub { $_[0]->_add_modified('date') },
 );
 
@@ -71,14 +71,14 @@ has integer2 => (
 has card => (
     is => 'rw',
     isa => InstanceOf['Stancer::Card'],
-    coerce  => sub { (blessed($_[0]) and (blessed($_[0]) eq 'Stancer::Card')) ? $_[0] : Stancer::Card->new($_[0]) },
+    coerce => sub { (blessed($_[0]) and (blessed($_[0]) eq 'Stancer::Card')) ? $_[0] : Stancer::Card->new($_[0]) },
     trigger => sub { $_[0]->_add_modified('card') },
 );
 
 has object1 => (
     is => 'rw',
     isa => InstanceOf['Stancer::Core::Object::Stub'],
-    coerce  => sub { (blessed($_[0]) and (blessed($_[0]) eq 'Stancer::Core::Object::Stub')) ? $_[0] : Stancer::Core::Object::Stub->new($_[0]) },
+    coerce => sub { (blessed($_[0]) and (blessed($_[0]) eq 'Stancer::Core::Object::Stub')) ? $_[0] : Stancer::Core::Object::Stub->new($_[0]) },
     trigger => sub { $_[0]->_add_modified('object1') },
 );
 
