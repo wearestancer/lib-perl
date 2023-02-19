@@ -1,4 +1,11 @@
 Revision history for Stancer.
 
-1.0.0
+Unreleased
+
+- Add missing `$Dispute::amount`
+- Rewrite main package pod
+
+
+1.0.0   2022-09-26
+
 - Initial release
