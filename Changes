@@ -3,11 +3,12 @@ Revision history for Stancer.
 Unreleased
 
 - Add missing `$Dispute::amount`
-- Rewrite main package pod
+- More perl critic configuration
 - Remove default timeout
-- Update dependencies
 - Remove needs to `List::MoreUtils::one()`
 - Recover CI testing
+- Rewrite main package pod
+- Update dependencies
 
 
 1.0.0   2022-09-26

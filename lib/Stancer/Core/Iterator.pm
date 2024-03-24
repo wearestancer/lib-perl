@@ -81,7 +81,7 @@ sub next { ## no critic (Subroutines::ProhibitBuiltinHomonyms)
     if ($this->{stop}) {
         $this->{stop} = 0;
 
-        return;
+        return undef;
     }
 
     return $this->{callback}();

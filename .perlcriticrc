@@ -1,6 +1,7 @@
 
 severity = brutal
 color = 1
+theme = core || pbp || bugs || security || cosmetic || complexity || maintenance || community
 
 [-CodeLayout::RequireTidyCode]
 [-Modules::RequireVersionVar]
@@ -28,5 +29,5 @@ minimum_regex_length_to_complain_about = 10
 allow = if unless until
 
 
-# Temporary removed
-[-Community::PreferredAlternatives]
+[Community::PreferredAlternatives]
+allowed_modules = List::MoreUtils JSON
