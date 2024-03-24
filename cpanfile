@@ -6,7 +6,7 @@ requires 'Business::SWIFT', '0.02';
 requires 'Carp';
 requires 'DateTime', '1.12';
 requires 'JSON', '2.61';
-requires 'List::MoreUtils', '0.408';
+requires 'List::MoreUtils', '0.418';
 requires 'Log::Any', '1.704';
 requires 'LWP::Protocol::https', '6.04';
 requires 'LWP::UserAgent', '6.05';
