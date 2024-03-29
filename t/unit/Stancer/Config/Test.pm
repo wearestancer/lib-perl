@@ -307,7 +307,7 @@ sub keychain : Tests(47) {
         foreach my $key (@keys) {
             my @filtered = grep { $_ eq $key } @{$keys};
 
-            ok(scalar @filtered, 'Should have ' . $key . ' key');
+            ok(scalar @filtered, 'Should have "' . $key . '" key');
         }
     }
 
@@ -334,7 +334,7 @@ sub keychain : Tests(47) {
         foreach my $key (@keys) {
             my @filtered = grep { $_ eq $key } @{$keys};
 
-            ok(scalar @filtered, 'Should have ' . $key . ' key');
+            ok(scalar @filtered, 'Should have "' . $key . '" key');
         }
     }
 
@@ -351,20 +351,20 @@ sub keychain : Tests(47) {
 
         isa_ok($keys, 'ARRAY', 'Stancer::Config->new->keychain($key)');
         is(scalar @{$keys}, 1, 'Should have only one element');
-        is($keys->[0], $key, 'Should be ' . $key);
+        is($keys->[0], $key, 'Should be "' . $key . '"');
     }
 
     my @invalid = (
-        random_string(30), # bad prefix
-        'ptest_' . random_string(10), # too small
-        'ptest_' . random_string(30), # too long
+        [random_string(30), 'unknown prefix'],
+        ['ptest_' . random_string(10), 'too small'],
+        ['ptest_' . random_string(30), 'too long'],
     );
 
     my $not_valid = 'is not a valid API key';
     my $object = Stancer::Config->new();
 
-    foreach my $key (@invalid) {
-        throws_ok { $object->keychain($key) } qr/"$key" $not_valid/sm, 'Invalid key ' . $key;
+    foreach my $data (@invalid) {
+        throws_ok { $object->keychain($data->[0]) } qr/"$data->[0]" $not_valid/sm, 'Invalid key ' . $data->[1];
     }
 }
 
@@ -418,12 +418,12 @@ sub pprod : Tests(8) {
     my $object = Stancer::Config->new();
     my $key = 'pprod_' . random_string(24);
     my @invalid = (
-        'sprod_' . random_string(24),
-        'ptest_' . random_string(24),
-        'stest_' . random_string(24),
-        random_string(30), # bad prefix
-        'pprod_' . random_string(10), # too small
-        'pprod_' . random_string(30), # too long
+        ['sprod_' . random_string(24), '"sprod" not a "pprod"'],
+        ['ptest_' . random_string(24), '"ptest" not a "pprod"'],
+        ['stest_' . random_string(24), '"stest" not a "pprod"'],
+        [random_string(30), 'unknown prefix' ],
+        ['pprod_' . random_string(10), 'too small' ],
+        ['pprod_' . random_string(30), 'too long' ],
     );
 
     is($object->pprod, undef, 'Undefined by default');
@@ -434,8 +434,8 @@ sub pprod : Tests(8) {
 
     my $not_valid = 'is not a valid public API key for live mode';
 
-    foreach my $key (@invalid) {
-        throws_ok { $object->pprod($key) } qr/"$key" $not_valid/sm, 'Invalid key ' . $key;
+    foreach my $data (@invalid) {
+        throws_ok { $object->pprod($data->[0]) } qr/"$data->[0]" $not_valid/sm, 'Invalid key, ' . $data->[1];
     }
 }
 
@@ -475,12 +475,12 @@ sub ptest : Tests(8) {
     my $object = Stancer::Config->new();
     my $key = 'ptest_' . random_string(24);
     my @invalid = (
-        'pprod_' . random_string(24),
-        'sprod_' . random_string(24),
-        'stest_' . random_string(24),
-        random_string(30), # bad prefix
-        'ptest_' . random_string(10), # too small
-        'ptest_' . random_string(30), # too long
+        ['pprod_' . random_string(24), '"pprod" is not a "ptest"'],
+        ['sprod_' . random_string(24), '"sprod" is not a "ptest"'],
+        ['stest_' . random_string(24), '"stest" is not a "ptest"'],
+        [random_string(30), 'unknown prefix'],
+        ['ptest_' . random_string(10), 'too small'],
+        ['ptest_' . random_string(30), 'too long'],
     );
 
     is($object->ptest, undef, 'Undefined by default');
@@ -491,8 +491,8 @@ sub ptest : Tests(8) {
 
     my $not_valid = 'is not a valid public API key for test mode';
 
-    foreach my $key (@invalid) {
-        throws_ok { $object->ptest($key) } qr/"$key" $not_valid/sm, 'Invalid key ' . $key;
+    foreach my $data (@invalid) {
+        throws_ok { $object->ptest($data->[0]) } qr/"$data->[0]" $not_valid/sm, 'Invalid key ' . $data->[1];
     }
 }
 
@@ -532,12 +532,12 @@ sub sprod : Tests(8) {
     my $object = Stancer::Config->new();
     my $key = 'sprod_' . random_string(24);
     my @invalid = (
-        'pprod_' . random_string(24),
-        'ptest_' . random_string(24),
-        'stest_' . random_string(24),
-        random_string(30), # bad prefix
-        'sprod_' . random_string(10), # too small
-        'sprod_' . random_string(30), # too long
+        ['pprod_' . random_string(24), '"pprod" is not a "sprod"'],
+        ['ptest_' . random_string(24), '"ptest" is not a "sprod"'],
+        ['stest_' . random_string(24), '"stest" is not a "sprod"'],
+        [random_string(30), 'unknown prefix'],
+        ['sprod_' . random_string(10), 'too small'],
+        ['sprod_' . random_string(30), 'too long'],
     );
 
     is($object->sprod, undef, 'Undefined by default');
@@ -548,8 +548,8 @@ sub sprod : Tests(8) {
 
     my $not_valid = 'is not a valid secret API key for live mode';
 
-    foreach my $key (@invalid) {
-        throws_ok { $object->sprod($key) } qr/"$key" $not_valid/sm, 'Invalid key ' . $key;
+    foreach my $data (@invalid) {
+        throws_ok { $object->sprod($data->[0]) } qr/"$data->[0]" $not_valid/sm, 'Invalid key ' . $data->[1];
     }
 }
 
@@ -557,12 +557,12 @@ sub stest : Tests(8) {
     my $object = Stancer::Config->new();
     my $key = 'stest_' . random_string(24);
     my @invalid = (
-        'pprod_' . random_string(24),
-        'ptest_' . random_string(24),
-        'sprod_' . random_string(24),
-        random_string(30), # bad prefix
-        'stest_' . random_string(10), # too small
-        'stest_' . random_string(30), # too long
+        ['pprod_' . random_string(24), '"pprod" is not a "stest"'],
+        ['ptest_' . random_string(24), '"ptest" is not a "stest"'],
+        ['sprod_' . random_string(24), '"sprod" is not a "stest"'],
+        [random_string(30), 'unknown prefix'],
+        ['stest_' . random_string(10), 'too small'],
+        ['stest_' . random_string(30), 'too long'],
     );
 
     is($object->stest, undef, 'Undefined by default');
@@ -573,8 +573,8 @@ sub stest : Tests(8) {
 
     my $not_valid = 'is not a valid secret API key for test mode';
 
-    foreach my $key (@invalid) {
-        throws_ok { $object->stest($key) } qr/"$key" $not_valid/sm, 'Invalid key ' . $key;
+    foreach my $data (@invalid) {
+        throws_ok { $object->stest($data->[0]) } qr/"$data->[0]" $not_valid/sm, 'Invalid key ' . $data->[1];
     }
 }
 

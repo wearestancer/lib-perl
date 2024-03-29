@@ -104,7 +104,7 @@ sub status : Tests(3) {
     throws_ok { $object->status($status) } qr/status is a read-only accessor/sm, 'Not writable';
 }
 
-sub TO_JSON : Tests(4) {
+sub TO_JSON : Tests(6) {
     { # 2 tests
         note 'SEPA without ID';
 
@@ -153,6 +153,15 @@ sub TO_JSON : Tests(4) {
 
         eq_or_diff(ref $check->TO_JSON(), 'HASH', 'TO_JSON should return an HASH');
         eq_or_diff($check->TO_JSON(), { id => $id }, 'Should return only SEPA ID');
+    }
+
+    { # 2 tests
+        note 'Without SEPA';
+
+        my $check = Stancer::Sepa::Check->new();
+
+        eq_or_diff(ref $check->TO_JSON(), 'HASH', 'TO_JSON should return an HASH');
+        eq_or_diff($check->TO_JSON(), {}, 'Should be empty');
     }
 }
 
