@@ -5,10 +5,11 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Core::Types::Network::Stub;
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub ip_address : Tests(22) {
     for my $address (ipv4_provider()) {
@@ -31,17 +32,17 @@ sub ip_address : Tests(22) {
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_ip_address => $fake);
     } 'Stancer::Exceptions::InvalidIpAddress', 'Must be a valid IP';
-    is($@->message, sprintf($message, q/"/ . $fake . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $fake . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_ip_address => $integer);
     } 'Stancer::Exceptions::InvalidIpAddress', 'Must be a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_ip_address => undef);
     } 'Stancer::Exceptions::InvalidIpAddress', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub port : Tests(9) {
@@ -54,22 +55,22 @@ sub port : Tests(9) {
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(a_port => $integer);
     } 'Stancer::Exceptions::InvalidPort', 'Must be less than 65 535';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(a_port => 0);
     } 'Stancer::Exceptions::InvalidPort', 'Must be at least 1';
-    is($@->message, sprintf($message, q/"0"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"0"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(a_port => $string);
     } 'Stancer::Exceptions::InvalidPort', 'Must be an integer';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(a_port => undef);
     } 'Stancer::Exceptions::InvalidPort', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub url : Tests(9) {
@@ -85,22 +86,22 @@ sub url : Tests(9) {
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_url => $http);
     } 'Stancer::Exceptions::InvalidUrl', 'Must be an HTTPS url';
-    is($@->message, sprintf($message, q/"/ . $http . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $http . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_url => $string);
     } 'Stancer::Exceptions::InvalidUrl', 'Must be an url';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_url => $integer);
     } 'Stancer::Exceptions::InvalidUrl', 'Must be a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Network::Stub->new(an_url => undef);
     } 'Stancer::Exceptions::InvalidUrl', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 1;

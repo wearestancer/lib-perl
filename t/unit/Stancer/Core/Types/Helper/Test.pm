@@ -10,7 +10,7 @@ use Stancer::Core::Object::Stub;
 use Stancer::Core::Types::Helper qw(coerce_boolean coerce_date coerce_datetime coerce_instance error_message);
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub boolean : Tests(6) {
     my $coerce = coerce_boolean();

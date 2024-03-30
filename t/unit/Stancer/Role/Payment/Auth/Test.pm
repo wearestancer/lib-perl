@@ -11,7 +11,7 @@ use Stancer::Device;
 use Stancer::Role::Payment::Auth::Stub;
 use TestCase;
 
-## no critic (RequireExtendedFormatting, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub auth : Tests(14) {
     { # 3 tests

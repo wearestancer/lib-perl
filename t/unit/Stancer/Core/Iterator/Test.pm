@@ -8,7 +8,7 @@ use base qw(Test::Class);
 use Stancer::Core::Iterator;
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(4) {
     my $callback = sub {};
@@ -44,7 +44,7 @@ sub end : Tests(5) {
     is($object->next, undef, 'Last call still returns undef');
 }
 
-sub next : Tests(3) {
+sub next : Tests(3) { ## no critic (Subroutines::ProhibitBuiltinHomonyms)
     my $called = 0;
     my @returns = (
         random_string(10),

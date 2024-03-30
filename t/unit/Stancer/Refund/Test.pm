@@ -9,7 +9,7 @@ use TestCase qw(:lwp); # Must be called first to initialize logs
 use DateTime;
 use Stancer::Refund;
 
-## no critic (RequireExtendedFormatting, RequireFinalReturn)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(8) {
     {

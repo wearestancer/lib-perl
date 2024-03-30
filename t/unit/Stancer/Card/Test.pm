@@ -5,11 +5,12 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Card;
-use POSIX;
+use POSIX qw(floor);
 use TestCase qw(:lwp);
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(15) {
     { # 4 tests
@@ -150,8 +151,14 @@ sub expiration : Tests(9) {
 
         $tmp->exp_year($year);
 
-        throws_ok { $tmp->expiration } 'Stancer::Exceptions::InvalidExpirationMonth', 'Throw exception if no month given';
-        is($@->message, 'You must set an expiration month before asking for a date.', 'Should indicate the error');
+        throws_ok {
+            $tmp->expiration
+        } 'Stancer::Exceptions::InvalidExpirationMonth', 'Throw exception if no month given';
+        is(
+            $EVAL_ERROR->message,
+            'You must set an expiration month before asking for a date.',
+            'Should indicate the error',
+        );
     }
 
     { # 2 tests
@@ -159,8 +166,14 @@ sub expiration : Tests(9) {
 
         $tmp->exp_month($month);
 
-        throws_ok { $tmp->expiration } 'Stancer::Exceptions::InvalidExpirationYear', 'Throw exception if no year given';
-        is($@->message, 'You must set an expiration year before asking for a date.', 'Should indicate the error');
+        throws_ok {
+            $tmp->expiration
+        } 'Stancer::Exceptions::InvalidExpirationYear', 'Throw exception if no year given';
+        is(
+            $EVAL_ERROR->message,
+            'You must set an expiration year before asking for a date.',
+            'Should indicate the error',
+        );
     }
 
     $object->exp_month($month);

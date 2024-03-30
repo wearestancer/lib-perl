@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Card;
 use Stancer::Customer;
 use Stancer::Payment;
@@ -12,7 +13,7 @@ use Stancer::Payment::Status;
 use List::Util qw(shuffle);
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars, RequireExtendedFormatting)
 
 sub bad_credential : Tests(3) {
     my $config = Stancer::Config->init();
@@ -24,10 +25,10 @@ sub bad_credential : Tests(3) {
     throws_ok(
         sub { Stancer::Payment->new('paym_' . random_string(24))->populate() },
         'Stancer::Exceptions::Http::Unauthorized',
-        'Should throw a Unauthorized (401) error'
+        'Should throw a Unauthorized (401) error',
     );
 
-    my $exception = $@; ## no critic (ProhibitPunctuationVars)
+    my $exception = $EVAL_ERROR;
 
     isa_ok($exception->request, 'HTTP::Request', '$exception->request');
     isa_ok($exception->response, 'HTTP::Response', '$exception->response');
@@ -40,7 +41,7 @@ sub get_data : Tests(9) {
     throws_ok(
         sub { Stancer::Payment->new('paym_' . random_string(24))->populate() },
         'Stancer::Exceptions::Http::NotFound',
-        'Should throw a NotFound (404) error'
+        'Should throw a NotFound (404) error',
     );
 
     my $payment = Stancer::Payment->new('paym_FQgpGVJpyGPVJVIuQtO3zy6i');
@@ -83,7 +84,13 @@ sub list : Tests(38) {
         $payment1->currency($currencies[0]);
         $payment1->description($description1);
         $payment1->card($card1);
-        $payment1->customer(Stancer::Customer->new(name => 'John Doe', email => 'john.doe+' . random_string(5) . '@example.com', external_id => random_string(20)));
+        $payment1->customer(
+            Stancer::Customer->new(
+                name => 'John Doe',
+                email => 'john.doe+' . random_string(5) . '@example.com',
+                external_id => random_string(20),
+            ),
+        );
         $payment1->order_id($order_id);
 
         $payment1->send();
@@ -106,7 +113,13 @@ sub list : Tests(38) {
         $payment2->currency($currencies[1]);
         $payment2->description($description2);
         $payment2->card($card2);
-        $payment2->customer(Stancer::Customer->new(name => 'John Doe', email => 'john.doe+' . random_string(5) . '@example.com', external_id => random_string(20)));
+        $payment2->customer(
+            Stancer::Customer->new(
+                name => 'John Doe',
+                email => 'john.doe+' . random_string(5) . '@example.com',
+                external_id => random_string(20),
+            ),
+        );
         $payment2->order_id($order_id);
 
         $payment2->send();
@@ -132,9 +145,21 @@ sub list : Tests(38) {
             is($payment->order_id, $sent->order_id, 'Should have same order_id (payment ' . $index . q/)/);
 
             is($payment->customer->id, $sent->customer->id, 'Customer should have same id (payment ' . $index . q/)/);
-            is($payment->customer->email, $sent->customer->email, 'Customer should have same email (payment ' . $index . q/)/);
-            is($payment->customer->external_id, $sent->customer->external_id, 'Customer should have same external_id (payment ' . $index . q/)/);
-            is($payment->customer->name, $sent->customer->name, 'Customer should have same name (payment ' . $index . q/)/);
+            is(
+                $payment->customer->email,
+                $sent->customer->email,
+                'Customer should have same email (payment ' . $index . q/)/,
+            );
+            is(
+                $payment->customer->external_id,
+                $sent->customer->external_id,
+                'Customer should have same external_id (payment ' . $index . q/)/,
+            );
+            is(
+                $payment->customer->name,
+                $sent->customer->name,
+                'Customer should have same name (payment ' . $index . q/)/,
+            );
         }
 
         is($index, 2, 'Should have made 2 loop');
@@ -498,7 +523,11 @@ sub send_global : Tests(49) {
         $payment->status(Stancer::Payment::Status::AUTHORIZE);
         $payment->send();
 
-        is($payment->status, Stancer::Payment::Status::AUTHORIZED, 'At least, we have updated the status, can we do it again ?');
+        is(
+            $payment->status,
+            Stancer::Payment::Status::AUTHORIZED,
+            'At least, we have updated the status, can we do it again ?',
+        );
 
         $payment->status(Stancer::Payment::Status::CAPTURE);
         $payment->send();
@@ -563,7 +592,7 @@ sub send_global : Tests(49) {
         my $message = 'Payment already exists, duplicate unique_id';
 
         throws_ok { $duplicate->send() } 'Stancer::Exceptions::Http::Conflict', 'Payment already exists';
-        like($@->message, qr/^$message [(]paym_\w{24}[)]$/sm, 'Should indicate the error');
+        like($EVAL_ERROR->message, qr/^$message [(]paym_\w{24}[)]$/sm, 'Should indicate the error');
     }
 
     { # 4 tests

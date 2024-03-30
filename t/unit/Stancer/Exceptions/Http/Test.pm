@@ -10,7 +10,7 @@ use HTTP::Request;
 use HTTP::Response;
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub factory : Tests(115) {
     my @codes = ();

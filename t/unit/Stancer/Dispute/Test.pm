@@ -7,11 +7,12 @@ use base qw(Test::Class);
 
 use DateTime;
 use DateTime::Span;
+use English qw(-no_match_vars);
 use Stancer::Dispute;
 use Stancer::Payment;
 use TestCase qw(:lwp);
 
-## no critic (ProhibitPunctuationVars, RequireExtendedFormatting, RequireFinalReturn)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(8) {
     { # 3 tests
@@ -199,73 +200,121 @@ sub list : Tests(117) {
         note 'Exceptions - created';
         # 9 tests
 
-        throws_ok { Stancer::Dispute->list(created => time + 100) } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with integer)';
-        is($@->message, 'Created must be in the past.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created => time + 100)
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with integer)';
+        is($EVAL_ERROR->message, 'Created must be in the past.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created => $date) } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with DateTime)';
-        is($@->message, 'Created must be in the past.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created => $date)
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with DateTime)';
+        is($EVAL_ERROR->message, 'Created must be in the past.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created => random_string(10)) } 'Stancer::Exceptions::InvalidSearchCreation', 'Should only works with integer and DateTime instance';
-        is($@->message, 'Created must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Should only works with integer and DateTime instance';
+        is($EVAL_ERROR->message, 'Created must be a position integer or a DateTime object.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created => Stancer::Card->new()) } 'Stancer::Exceptions::InvalidSearchCreation', 'Should not accept blessed variable other than DataTime';
-        is($@->message, 'Created must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created => Stancer::Card->new())
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Should not accept blessed variable other than DataTime';
+        is($EVAL_ERROR->message, 'Created must be a position integer or a DateTime object.', $message->());
 
-        isa_ok(Stancer::Dispute->list(created => time - 1000), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(created => $created)');
+        isa_ok(
+            Stancer::Dispute->list(created => time - 1000),
+            'Stancer::Core::Iterator::Dispute',
+            'Stancer::Dispute->list(created => $created)',
+        );
 
         note 'Exceptions - created until';
         # 11 tests
 
-        throws_ok { Stancer::Dispute->list(created_until => time + 100) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with integer)';
-        is($@->message, 'Created until must be in the past.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created_until => time + 100)
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with integer)';
+        is($EVAL_ERROR->message, 'Created until must be in the past.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created_until => $date) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with DateTime)';
-        is($@->message, 'Created until must be in the past.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created_until => $date)
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with DateTime)';
+        is($EVAL_ERROR->message, 'Created until must be in the past.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created_until => random_string(10)) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should only works with integer and DateTime instance';
-        is($@->message, 'Created until must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created_until => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should only works with integer and DateTime instance';
+        is($EVAL_ERROR->message, 'Created until must be a position integer or a DateTime object.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created_until => Stancer::Card->new()) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should not accept blessed variable other than DataTime';
-        is($@->message, 'Created until must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created_until => Stancer::Card->new())
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should not accept blessed variable other than DataTime';
+        is($EVAL_ERROR->message, 'Created until must be a position integer or a DateTime object.', $message->());
 
-        throws_ok { Stancer::Dispute->list(created => time - 100, created_until => time - 200) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be after created';
-        is($@->message, 'Created until can not be before created.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(created => time - 100, created_until => time - 200)
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be after created';
+        is($EVAL_ERROR->message, 'Created until can not be before created.', $message->());
 
-        isa_ok(Stancer::Dispute->list(created_until => time - 1000), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(created_until => $created_until)');
+        isa_ok(
+            Stancer::Dispute->list(created_until => time - 1000),
+            'Stancer::Core::Iterator::Dispute',
+            'Stancer::Dispute->list(created_until => $created_until)',
+        );
 
         note 'Exceptions - limit';
         # 7 tests
 
-        throws_ok { Stancer::Dispute->list(limit => 0) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be at least 1';
-        is($@->message, 'Limit must be between 1 and 100.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(limit => 0)
+        } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be at least 1';
+        is($EVAL_ERROR->message, 'Limit must be between 1 and 100.', $message->());
 
-        throws_ok { Stancer::Dispute->list(limit => 101) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be maximum 100';
-        is($@->message, 'Limit must be between 1 and 100.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(limit => 101)
+        } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be maximum 100';
+        is($EVAL_ERROR->message, 'Limit must be between 1 and 100.', $message->());
 
-        throws_ok { Stancer::Dispute->list(limit => random_string(10)) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be an integer';
-        is($@->message, 'Limit must be an integer.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(limit => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be an integer';
+        is($EVAL_ERROR->message, 'Limit must be an integer.', $message->());
 
-        isa_ok(Stancer::Dispute->list(limit => random_integer(99) + 1), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(limit => $limit)');
+        isa_ok(
+            Stancer::Dispute->list(limit => random_integer(99) + 1),
+            'Stancer::Core::Iterator::Dispute',
+            'Stancer::Dispute->list(limit => $limit)',
+        );
 
         note 'Exceptions - start';
         # 5 tests
 
-        throws_ok { Stancer::Dispute->list(start => -1) } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be positive';
-        is($@->message, 'Start must be a positive integer.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(start => -1)
+        } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be positive';
+        is($EVAL_ERROR->message, 'Start must be a positive integer.', $message->());
 
-        throws_ok { Stancer::Dispute->list(start => random_string(10)) } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be an integer';
-        is($@->message, 'Start must be a positive integer.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(start => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be an integer';
+        is($EVAL_ERROR->message, 'Start must be a positive integer.', $message->());
 
-        isa_ok(Stancer::Dispute->list(start => random_integer(100)), 'Stancer::Core::Iterator::Dispute', 'Stancer::Dispute->list(start => $start)');
+        isa_ok(
+            Stancer::Dispute->list(start => random_integer(100)),
+            'Stancer::Core::Iterator::Dispute',
+            'Stancer::Dispute->list(start => $start)',
+        );
 
         note 'Exceptions - empty';
         # 4 tests
 
-        throws_ok { Stancer::Dispute->list() } 'Stancer::Exceptions::InvalidSearchFilter', 'Search filter are mandatory';
-        is($@->message, 'Invalid search filters.', $message->());
+        throws_ok {
+            Stancer::Dispute->list()
+        } 'Stancer::Exceptions::InvalidSearchFilter', 'Search filter are mandatory';
+        is($EVAL_ERROR->message, 'Invalid search filters.', $message->());
 
-        throws_ok { Stancer::Dispute->list(foo => random_string(5)) } 'Stancer::Exceptions::InvalidSearchFilter', 'Only known filters works';
-        is($@->message, 'Invalid search filters.', $message->());
+        throws_ok {
+            Stancer::Dispute->list(foo => random_string(5))
+        } 'Stancer::Exceptions::InvalidSearchFilter', 'Only known filters works';
+        is($EVAL_ERROR->message, 'Invalid search filters.', $message->());
     }
 
     { # 7 tests

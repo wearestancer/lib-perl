@@ -8,7 +8,7 @@ use base qw(Test::Class);
 use TestCase qw(:lwp); # Must be called first to initialize logs
 use Stancer::Sepa::Check;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars, RequireExtendedFormatting)
 
 sub instanciate : Tests(2) {
     { # 2 tests

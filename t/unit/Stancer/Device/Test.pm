@@ -5,10 +5,11 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Device;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireExtendedFormatting, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(10) {
     note 'Basic tests';
@@ -273,13 +274,17 @@ sub hydrate_from_env : Tests(52) {
         is($object->port, undef, 'Should return undef for `port` property');
         is($object->user_agent, undef, 'Should return undef for `user_agent` property');
 
-        throws_ok { $object->hydrate_from_env } 'Stancer::Exceptions::InvalidIpAddress', 'Throw exception if no IP address found';
-        is($@->message, 'Invalid IP address.', 'Should indicate the error');
+        throws_ok {
+            $object->hydrate_from_env
+        } 'Stancer::Exceptions::InvalidIpAddress', 'Throw exception if no IP address found';
+        is($EVAL_ERROR->message, 'Invalid IP address.', 'Should indicate the error');
 
         local $ENV{SERVER_ADDR} = $ip;
 
-        throws_ok { $object->hydrate_from_env } 'Stancer::Exceptions::InvalidPort', 'Throw exception if no port found';
-        is($@->message, 'Invalid port.', 'Should indicate the error');
+        throws_ok {
+            $object->hydrate_from_env
+        } 'Stancer::Exceptions::InvalidPort', 'Throw exception if no port found';
+        is($EVAL_ERROR->message, 'Invalid port.', 'Should indicate the error');
 
         local $ENV{SERVER_PORT} = $port;
 

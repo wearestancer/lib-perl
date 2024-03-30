@@ -13,7 +13,7 @@ use Stancer::Payment;
 use List::Util qw(shuffle);
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub list : Tests(4) {
     { # 4 tests

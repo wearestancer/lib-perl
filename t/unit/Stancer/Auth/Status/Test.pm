@@ -9,6 +9,8 @@ use base qw(Test::Class);
 use Stancer::Auth::Status;
 use TestCase;
 
+## no critic (RequireFinalReturn)
+
 sub constants : Tests(9) {
     is(Stancer::Auth::Status::ATTEMPTED, 'attempted', 'Constant "Stancer::Auth::Status::ATTEMPTED" exists');
     is(Stancer::Auth::Status::AVAILABLE, 'available', 'Constant "Stancer::Auth::Status::AVAILABLE" exists');

@@ -79,7 +79,7 @@ around methods_allowed => sub {
             (not $class->_process_hydratation)
         && defined $class->currency
         && $class->currency ne 'eur'
-        && any { (defined $_) && ($_ eq 'sepa') } @{$args}
+        && any { $_ eq 'sepa' } @{$args}
     ) {
         my $message = sprintf 'You can not ask for "%s" with "%s" currency.', (
             'sepa',

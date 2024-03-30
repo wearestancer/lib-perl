@@ -10,7 +10,7 @@ use DateTime;
 use Stancer::Core::Object;
 use Stancer::Core::Object::Stub;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting, Capitalization)
+## no critic (Capitalization, RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Test {
     my $object = Stancer::Core::Object->new;

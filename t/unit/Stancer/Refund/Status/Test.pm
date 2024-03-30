@@ -9,6 +9,8 @@ use base qw(Test::Class);
 use Stancer::Refund::Status;
 use TestCase;
 
+## no critic (RequireFinalReturn)
+
 sub constants : Tests(6) {
     is(Stancer::Refund::Status::NOT_HONORED, 'not_honored', 'Constant "Stancer::Refund::Status::NOT_HONORED" exists');
     is(Stancer::Refund::Status::PAYMENT_CANCELED, 'payment_canceled', 'Constant "Stancer::Refund::Status::PAYMENT_CANCELED" exists');

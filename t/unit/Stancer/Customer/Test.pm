@@ -5,11 +5,11 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Customer;
-use POSIX;
 use TestCase qw(:lwp);
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting, Capitalization, ProhibitPunctuationVars)
+## no critic (Capitalization, RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(12) {
     {
@@ -93,8 +93,14 @@ sub external_id : Tests(5) {
     is($object->external_id, $external_id, 'Should be updated');
     is($object->toJSON(), '{"external_id":"' . $external_id . '"}', 'Should be exported');
 
-    throws_ok { $object->external_id($too_long) } 'Stancer::Exceptions::InvalidExternalId', 'Should complain when oversized';
-    is($@->message, 'Must be at maximum 36 characters, tried with "' . $too_long . q/"./, 'Should indicate the error');
+    throws_ok {
+        $object->external_id($too_long)
+    } 'Stancer::Exceptions::InvalidExternalId', 'Should complain when oversized';
+    is(
+        $EVAL_ERROR->message,
+        'Must be at maximum 36 characters, tried with "' . $too_long . q/"./,
+        'Should indicate the error',
+    );
 }
 
 sub mobile : Tests(3) {
@@ -165,9 +171,13 @@ sub send_global : Tests(12) {
     throws_ok(
         sub { $object->send() },
         'Stancer::Exceptions::BadMethodCall',
-        'Customer should have an email or a phone number to be sent'
+        'Customer should have an email or a phone number to be sent',
     );
-    is($@->message, 'You must provide an email or a phone number to create a customer.', 'Should indicate the error');
+    is(
+        $EVAL_ERROR->message,
+        'You must provide an email or a phone number to create a customer.',
+        'Should indicate the error',
+    );
 
     is($mock_ua->called('request'), 0, 'Errors will not trigger an API call');
 
