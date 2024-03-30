@@ -132,7 +132,7 @@ Card country.
 
 =attr C<currency>
 
-Read/Write string, must be one of "EUR", "GBP" or "USD".
+Read/Write string, must be one of "AUD", "CAD", "CHF", "DKK", "EUR", "GBP", "JPY", "NOK", "PLN", "SEK" or "USD".
 
 Payment currency.
 
@@ -147,7 +147,7 @@ around currency => sub {
 
     if (
             (not $class->_process_hydratation)
-        && lc $args eq 'eur'
+        && lc $args ne 'eur'
         && defined $methods
         && any { $_ eq 'sepa' } @{$methods}
     ) {

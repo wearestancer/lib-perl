@@ -300,26 +300,41 @@ sub country : Tests(3) {
     throws_ok { $object->country($country) } qr/country is a read-only accessor/sm, 'Not writable';
 }
 
-sub currency : Tests(3) {
-    { # 3 tests
+sub currency : Tests(21) {
+    { # 2 tests * 10 entries => 20
         note 'Should alert if a method is asked with an unsupported currency';
 
         my $payment = Stancer::Payment->new();
 
         $payment->methods_allowed('sepa');
 
-        throws_ok { $payment->currency('eur') } 'Stancer::Exceptions::InvalidCurrency', 'Should throw an error';
-        is($@->message, 'You can not ask for "EUR" with "sepa" method.', 'Should indicate the error');
+        for my $currency (currencies_for_card_provider()) {
+            next if $currency eq 'EUR';
 
-        my $currency;
+            throws_ok {
+                $payment->currency($currency)
+            } 'Stancer::Exceptions::InvalidCurrency', 'Should throw an error (' . $currency . ')';
 
-        do {
-            $currency = currencies_provider();
-        } while lc $currency eq 'eur';
+            is(
+                $EVAL_ERROR->message,
+                'You can not ask for "' . $currency . '" with "sepa" method.',
+                'Should indicate the error (' . $currency . ')',
+            );
+        }
+    }
 
-        $payment->currency($currency);
+    { # 1 test * 1 entry
+        note 'Should allow supported currencies';
 
-        is($payment->currency, lc $currency, 'Should have new value');
+        my $payment = Stancer::Payment->new();
+
+        $payment->methods_allowed('sepa');
+
+        for my $currency (currencies_for_sepa_provider()) {
+            $payment->currency($currency);
+
+            is($payment->currency, lc $currency, 'Should have new value');
+        }
     }
 }
 
@@ -1132,7 +1147,7 @@ sub method : Tests(3) {
     throws_ok { $object->method($method) } qr/method is a read-only accessor/sm, 'Not writable';
 }
 
-sub methods_allowed : Tests(24) {
+sub methods_allowed : Tests(100) {
     my @methods = shuffle qw(card sepa);
     my $method = $methods[0];
 
@@ -1174,83 +1189,83 @@ sub methods_allowed : Tests(24) {
         cmp_deeply_json($payment, { methods_allowed => $results }, 'Should be exported');
     }
 
-    { # 15 tests
-        my $currency;
-
-        do {
-            $currency = currencies_for_card_provider();
-        } while lc $currency eq 'eur';
-
-        { # 4 tests
+    { # 91 tests
+        { # 4 tests * 10 entries => 40
             note 'Should alert if a method is asked with an unsupported currency';
 
             my $payment = Stancer::Payment->new();
 
-            $payment->currency($currency);
+            for my $currency (currencies_for_card_provider()) {
+                next if $currency eq 'EUR';
 
-            throws_ok {
-                $payment->methods_allowed(\@methods)
-            } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
-            is(
-                $EVAL_ERROR->message,
-                'You can not ask for "sepa" with "' . $currency . '" currency.',
-                'Should indicate the error',
-            );
+                $payment->currency($currency);
 
-            throws_ok {
-                $payment->methods_allowed('sepa')
-            } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
-            is(
-                $EVAL_ERROR->message,
-                'You can not ask for "sepa" with "' . $currency . '" currency.',
-                'Should indicate the error',
-            );
+                throws_ok {
+                    $payment->methods_allowed(\@methods)
+                } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
+                is(
+                    $EVAL_ERROR->message,
+                    'You can not ask for "sepa" with "' . $currency . '" currency.',
+                    'Should indicate the error',
+                );
+
+                throws_ok {
+                    $payment->methods_allowed('sepa')
+                } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
+                is(
+                    $EVAL_ERROR->message,
+                    'You can not ask for "sepa" with "' . $currency . '" currency.',
+                    'Should indicate the error',
+                );
+            }
         }
 
-        { # 4 tests
+        { # 4 tests * 11 entries => 44
             note 'Should still work with other method';
 
             my $payment = Stancer::Payment->new();
             my $local_method = 'card';
 
-            $payment->currency($currency);
-            $payment->methods_allowed($local_method);
+            for my $currency (currencies_for_card_provider()) {
+                $payment->currency($currency);
+                $payment->methods_allowed($local_method);
 
-            my $results = $payment->methods_allowed;
+                my $results = $payment->methods_allowed;
 
-            is(ref $results, 'ARRAY', 'Should return an array');
-            ok(scalar @{$results} == 1, 'Should have only one allowed method');
+                is(ref $results, 'ARRAY', 'Should return an array');
+                ok(scalar @{$results} == 1, 'Should have only one allowed method');
 
-            is($results->[0], $local_method, 'Should have expected value');
-            cmp_deeply_json(
-                $payment,
-                { currency => lc $currency, methods_allowed => [$local_method] },
-                'Should be exported',
-            );
+                is($results->[0], $local_method, 'Should have expected value');
+                cmp_deeply_json(
+                    $payment,
+                    { currency => lc $currency, methods_allowed => [$local_method] },
+                    'Should be exported',
+                );
+            }
         }
 
-        { # 4 tests
+        { # 4 tests * 1 entry
             note 'Should still work with supported currency';
 
             my $payment = Stancer::Payment->new();
             my $local_method = 'sepa';
 
-            $currency = currencies_for_sepa_provider();
+            for my $currency (currencies_for_sepa_provider()) {
+                $payment->currency($currency);
+                $payment->methods_allowed($local_method);
 
-            $payment->currency($currency);
-            $payment->methods_allowed($local_method);
+                my $results = $payment->methods_allowed;
 
-            my $results = $payment->methods_allowed;
+                is(ref $results, 'ARRAY', 'Should return an array');
+                ok(scalar @{$results} == 1, 'Should have only one allowed method');
 
-            is(ref $results, 'ARRAY', 'Should return an array');
-            ok(scalar @{$results} == 1, 'Should have only one allowed method');
-
-            is($results->[0], $local_method, 'Should have expected value');
-            cmp_deeply_json(
-                $payment,
-                { currency => lc $currency, methods_allowed => [$local_method] },
-                'Should be exported',
-            );
+                is($results->[0], $local_method, 'Should have expected value');
+                cmp_deeply_json(
+                    $payment,
+                    { currency => lc $currency, methods_allowed => [$local_method] },
+                    'Should be exported',
+                );
+            }
         }
 
         { # 3 tests
@@ -1258,7 +1273,7 @@ sub methods_allowed : Tests(24) {
 
             my $content = read_file '/t/fixtures/payment/read.json', json => 1;
 
-            $content->{currency} = $currency;
+            $content->{currency} = 'EUR';
             $content->{methods_allowed} = \@methods;
 
             $mock_response->set_always(decoded_content => encode_json $content);

@@ -3,6 +3,7 @@ Revision history for Stancer.
 Unreleased
 
 - Add missing `$Dispute::amount`
+- Fix currencies for SEPA
 - More perl critic configuration
 - Remove default timeout
 - Remove needs to `List::MoreUtils::one()`
