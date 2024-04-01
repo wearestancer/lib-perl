@@ -2440,22 +2440,22 @@ sub send_global : Tests(221) {
         note 'Validate issue #3';
 
         my ($sec, $min, $hour, $mday, $mon, $y, $wday, $yday, $isdst) = localtime;
-        my $exp_year = random_integer(1, 15) + $y + 1900;
+        my $exp_year = random_integer(5, 15) + $y + 1900;
         my $exp_month = random_integer(1, 12);
 
         my $card = Stancer::Card->new(
-            number    => '4000000000000002',
-            cvc       => '123',
+            number => '4000000000000002',
+            cvc => '123',
             exp_month => $exp_month,
-            exp_year  => $exp_year,
+            exp_year => $exp_year,
         );
 
         my $payment = Stancer::Payment->new(
-            amount    => 3999,
-            auth      => 'https://www.example.org/?' . random_string(50),
-            currency  => 'eur',
-            card      => $card,
-            device    => {},
+            amount => 3999,
+            auth => 'https://www.example.org/?' . random_string(50),
+            currency => 'eur',
+            card => $card,
+            device => {},
         );
 
         throws_ok { $payment->send() } 'Stancer::Exceptions::InvalidIpAddress', 'Manually added device must be checked for valid IP';
