@@ -10,9 +10,10 @@ use warnings;
 use Stancer::Core::Types qw(Amount Maybe Currency);
 
 use Moo::Role;
-use namespace::clean;
 
 requires qw(_add_modified _attribute_builder);
+
+use namespace::clean;
 
 =attr C<amount>
 

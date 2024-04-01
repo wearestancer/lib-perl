@@ -13,16 +13,17 @@ use Stancer::Payment;
 use Scalar::Util qw(blessed);
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Object';
 with 'Stancer::Role::Amount::Write';
 
+use namespace::clean;
+
+use Stancer::Refund::Status;
+
 has '+endpoint' => (
     default => 'refunds',
 );
-
-use Stancer::Refund::Status;
 
 =method C<< Stancer::Refund->new(I<$token>) : I<self> >>
 

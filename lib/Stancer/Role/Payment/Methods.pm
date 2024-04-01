@@ -11,9 +11,10 @@ use Stancer::Core::Types qw(coerce_instance ArrayRef CardInstance Enum Maybe Sep
 use List::MoreUtils qw(any);
 
 use Moo::Role;
-use namespace::clean;
 
 requires qw(_add_modified _attribute_builder _set_method);
+
+use namespace::clean;
 
 =attr C<card>
 

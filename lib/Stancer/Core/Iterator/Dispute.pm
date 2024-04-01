@@ -10,10 +10,10 @@ use warnings;
 use Stancer::Dispute;
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Iterator';
 
+use namespace::clean;
 
 =head1 DESCRIPTION
 

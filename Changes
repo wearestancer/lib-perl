@@ -6,6 +6,11 @@ Unreleased
 - Fix currencies for SEPA
 - More perl critic configuration
 - Remove default timeout
+- Rewrite main package POD
+- Remove default timeout
+- Update dependencies
+- Remove needs to `Business::IBAN`
+- Remove needs to `Business::SWIFT`
 - Remove needs to `List::MoreUtils::one()`
 - Recover CI testing
 - Rewrite main package pod

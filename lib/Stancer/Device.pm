@@ -10,9 +10,10 @@ use warnings;
 use Stancer::Core::Types qw(:network Maybe Str);
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Object';
+
+use namespace::clean;
 
 has '+_integer' => (
     default => sub{ [qw(port)] },

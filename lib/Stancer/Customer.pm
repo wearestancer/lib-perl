@@ -12,10 +12,15 @@ use Stancer::Core::Types qw(Email ExternalId Maybe Mobile);
 use Stancer::Exceptions::BadMethodCall;
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Object';
 with 'Stancer::Role::Name';
+
+use namespace::clean;
+
+has '+endpoint' => (
+    default => 'customers',
+);
 
 =method C<< Stancer::Customer->new() : I<self> >>
 
@@ -32,12 +37,6 @@ This method accept an optional string, it will be used as an entity ID for API c
 
     # Get an existing customer
     my $exist = Stancer::Customer->new($token);
-
-=cut
-
-has '+endpoint' => (
-    default => 'customers',
-);
 
 =attr C<email>
 

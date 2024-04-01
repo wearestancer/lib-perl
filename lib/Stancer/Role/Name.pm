@@ -10,9 +10,10 @@ use warnings;
 use Stancer::Core::Types qw(Maybe Name);
 
 use Moo::Role;
-use namespace::clean;
 
 requires qw(_add_modified _attribute_builder);
+
+use namespace::clean;
 
 =attr C<name>
 
