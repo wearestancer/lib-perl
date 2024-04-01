@@ -5,17 +5,18 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Customer;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars, RequireExtendedFormatting)
 
 sub get_data : Tests(11) {
     # 404
     throws_ok(
         sub { Stancer::Customer->new('cust_' . random_string(24))->populate() },
         'Stancer::Exceptions::Http::NotFound',
-        'Should throw a NotFound (404) error'
+        'Should throw a NotFound (404) error',
     );
 
     my $object;
@@ -59,7 +60,7 @@ sub del : Tests {
     throws_ok(
         sub { Stancer::Customer->new($id)->populate() },
         'Stancer::Exceptions::Http::NotFound',
-        'Should throw a NotFound (404) error'
+        'Should throw a NotFound (404) error',
     );
 }
 
@@ -116,8 +117,8 @@ sub send_global : Tests(16) {
         my $message = 'Customer already exists, you may want to update it instead creating a new one';
 
         throws_ok { $object->send() } 'Stancer::Exceptions::Http::Conflict', 'Customer already exists';
-        like($@->message, qr/^$message [(]cust_\w{24}[)]$/sm, 'Should indicate the error');
-        like($@->message, qr/$id/sm, 'Should indicate the id');
+        like($EVAL_ERROR->message, qr/^$message [(]cust_\w{24}[)]$/sm, 'Should indicate the error');
+        like($EVAL_ERROR->message, qr/$id/sm, 'Should indicate the id');
     }
 
     { # 7 tests
@@ -159,7 +160,7 @@ sub send_global : Tests(16) {
         my $message = 'Customer already exists, you may want to update it instead creating a new one';
 
         throws_ok { $object->send() } 'Stancer::Exceptions::Http::Conflict', 'Customer already exists';
-        like($@->message, qr/^$message [(]cust_\w{24}[)]$/sm, 'Should indicate the error');
+        like($EVAL_ERROR->message, qr/^$message [(]cust_\w{24}[)]$/sm, 'Should indicate the error');
     }
 }
 

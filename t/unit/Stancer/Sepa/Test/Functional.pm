@@ -9,14 +9,14 @@ use Stancer::Sepa;
 use List::Util qw(shuffle);
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (ProhibitPunctuationVars, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub get_data : Tests(9) {
     # 404
     throws_ok(
         sub { Stancer::Sepa->new('sepa_' . random_string(24))->populate() },
         'Stancer::Exceptions::Http::NotFound',
-        'Should throw a NotFound (404) error'
+        'Should throw a NotFound (404) error',
     );
 
     my $sepa = Stancer::Sepa->new('sepa_bIvCZePYqfMlU11TANT8IqL1');

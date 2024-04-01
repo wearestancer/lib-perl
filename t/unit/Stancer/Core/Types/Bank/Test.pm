@@ -5,10 +5,11 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Core::Types::Bank::Stub;
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub amount : Tests(7) {
     ok(Stancer::Core::Types::Bank::Stub->new(an_amount => random_integer(50, 99_999)), 'An amount');
@@ -20,17 +21,17 @@ sub amount : Tests(7) {
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(an_amount => $integer);
     } 'Stancer::Exceptions::InvalidAmount', 'Must be at least 50';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(an_amount => $string);
     } 'Stancer::Exceptions::InvalidAmount', 'Must be an integer';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(an_amount => undef);
     } 'Stancer::Exceptions::InvalidAmount', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub bic : Tests(15) {
@@ -45,17 +46,17 @@ sub bic : Tests(15) {
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_bic => $bad);
     } 'Stancer::Exceptions::InvalidBic', $bad . ' is not valid';
-    is($@->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_bic => $integer);
     } 'Stancer::Exceptions::InvalidBic', 'Must be a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_bic => undef);
     } 'Stancer::Exceptions::InvalidBic', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub card_number : Tests(112) {
@@ -70,18 +71,18 @@ sub card_number : Tests(112) {
         throws_ok {
             Stancer::Core::Types::Bank::Stub->new(a_card_number => $bad);
         } 'Stancer::Exceptions::InvalidCardNumber', $bad . ' is not valid';
-        is($@->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
+        is($EVAL_ERROR->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
     }
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_card_number => $string);
     } 'Stancer::Exceptions::InvalidCardNumber', 'Must be an integer';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_card_number => undef);
     } 'Stancer::Exceptions::InvalidCardNumber', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub card_verification_code {
@@ -97,18 +98,18 @@ sub card_verification_code {
         throws_ok {
             Stancer::Core::Types::Bank::Stub->new(a_card_verification_code => $bad);
         } 'Stancer::Exceptions::InvalidCardVerificationCode', $bad . ' is not valid';
-        is($@->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
+        is($EVAL_ERROR->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
     }
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_card_verification_code => $string);
     } 'Stancer::Exceptions::InvalidCardVerificationCode', 'Must be an integer';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_card_verification_code => undef);
     } 'Stancer::Exceptions::InvalidCardVerificationCode', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub currency : Tests(28) {
@@ -124,17 +125,17 @@ sub currency : Tests(28) {
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_currency => $integer);
     } 'Stancer::Exceptions::InvalidCurrency', 'Must a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_currency => $string);
     } 'Stancer::Exceptions::InvalidCurrency', 'Must be one of expected currecies';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(a_currency => undef);
     } 'Stancer::Exceptions::InvalidCurrency', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub iban : Tests(21) {
@@ -148,12 +149,12 @@ sub iban : Tests(21) {
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(an_iban => $bad);
     } 'Stancer::Exceptions::InvalidIban', $bad . ' is not valid';
-    is($@->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $bad . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bank::Stub->new(an_iban => undef);
     } 'Stancer::Exceptions::InvalidIban', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 1;

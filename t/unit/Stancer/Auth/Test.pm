@@ -9,7 +9,7 @@ use Stancer::Auth;
 use Stancer::Auth::Status;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireExtendedFormatting, RequireFinalReturn)
+## no critic (ProhibitPunctuationVars, RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(9) {
     { # 3 tests

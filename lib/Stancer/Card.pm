@@ -92,7 +92,7 @@ sub brandname {
     my $this = shift;
     my $brand = $this->brand;
 
-    return if not defined $brand;
+    return undef if not defined $brand;
     return $names{$brand} if any { $_ eq $brand } keys %names;
     return $brand;
 }

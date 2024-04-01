@@ -9,6 +9,8 @@ use base qw(Test::Class);
 use Stancer::Payment::Status;
 use TestCase;
 
+## no critic (RequireFinalReturn)
+
 sub constants : Tests(10) {
     is(Stancer::Payment::Status::AUTHORIZE, 'authorize', 'Constant "Stancer::Payment::Status::AUTHORIZE" exists');
     is(Stancer::Payment::Status::AUTHORIZED, 'authorized', 'Constant "Stancer::Payment::Status::AUTHORIZED" exists');

@@ -9,9 +9,8 @@ use TestCase qw(:lwp); # Must be called first to initialize logs
 use Stancer::Config;
 use Stancer::Sepa;
 use DateTime;
-use POSIX;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars, RequireExtendedFormatting)
 
 sub instanciate : Tests(15) {
     { # 4 tests
@@ -91,7 +90,7 @@ sub bic : Tests(19) {
     }
 }
 
-sub check : Tests(13) {
+sub check : Tests(14) {
     { # 2 tests
         note 'Without ID';
 
@@ -141,6 +140,24 @@ sub check : Tests(13) {
         $mock_ua->clear();
 
         is($sepa->check, undef, 'Should be undefined as no verification asked');
+
+        # back to normal
+        $mock_response->set_always('code', 200);
+        $mock_response->set_always('is_success', 1);
+    }
+
+    { # 1 test
+        note 'Exceptions are not hidden';
+
+        my $id = random_string(29);
+        my $sepa = Stancer::Sepa->new($id);
+
+        $mock_response->set_always('code', 500);
+        $mock_response->set_always('decoded_content', q//);
+        $mock_response->set_always('is_success', 0);
+        $mock_ua->clear();
+
+        throws_ok { $sepa->check } 'Stancer::Exceptions::Http::InternalServerError', 'Exceptions are not hidden';
 
         # back to normal
         $mock_response->set_always('code', 200);

@@ -112,7 +112,7 @@ sub _clean_request {
     my $object = shift;
 
     if ($object && $object->isa('Stancer::Payment')) {
-        if ($object->card && $object->card->isa('Stancer::Card') && $object->card->number) {
+        if ($object->card && $object->card->number) {
             my $content = $request->content;
             my $number = $object->card->number;
             my $last4 = ('x' x (length($number) - 4)) . $object->card->last4;
@@ -122,7 +122,7 @@ sub _clean_request {
             $request->content($content);
         }
 
-        if ($object->sepa && $object->sepa->isa('Stancer::Sepa') && $object->sepa->iban) {
+        if ($object->sepa && $object->sepa->iban) {
             my $content = $request->content;
             my $number = $object->sepa->iban;
             my $last4 = ('x' x (length($number) - 4)) . $object->sepa->last4;

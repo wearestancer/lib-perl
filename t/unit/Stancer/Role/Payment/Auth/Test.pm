@@ -6,11 +6,12 @@ use warnings;
 use base qw(Test::Class);
 
 use Stancer::Auth;
+use Stancer::Auth::Status;
 use Stancer::Device;
 use Stancer::Role::Payment::Auth::Stub;
 use TestCase;
 
-## no critic (RequireExtendedFormatting, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub auth : Tests(14) {
     { # 3 tests
@@ -92,21 +93,7 @@ sub auth : Tests(14) {
     }
 }
 
-sub device : Tests(3) {
-    my $object = Stancer::Role::Payment::Auth::Stub->new();
-    my $ip = ipv4_provider();
-    my $port = random_integer(1, 65_535);
-    my $device = Stancer::Device->new(ip => $ip, port => $port);
-
-    is($object->device, undef, 'Undefined by default');
-
-    $object->device($device);
-
-    is($object->device, $device, 'Should be updated');
-    cmp_deeply_json($object, { device => { ip => $ip, port => $port } }, 'Should be exported');
-}
-
-sub _create_device : Tests(12) {
+sub create_device : Tests(14) {
     { # 2 tests
         note 'No method, no device';
 
@@ -160,6 +147,18 @@ sub _create_device : Tests(12) {
         is($object->device, undef, 'No device created');
     }
 
+    { # 2 tests
+        note 'Got an auth object without return URL, no device, no exception';
+
+        my $object = Stancer::Role::Payment::Auth::Stub->new();
+
+        $object->auth(Stancer::Auth::Status::REQUESTED);
+        $object->method('card'); # For test only
+
+        isa_ok($object->_create_device, 'Stancer::Role::Payment::Auth::Stub', '$object->_create_device');
+        is($object->device, undef, 'No device created');
+    }
+
     { # 4 tests
         note 'Got a method, should alert if device creation is impossible';
 
@@ -182,6 +181,20 @@ sub _create_device : Tests(12) {
         isa_ok($object->_create_device, 'Stancer::Role::Payment::Auth::Stub', '$object->_create_device');
         isa_ok($object->device, 'Stancer::Device', 'Device created');
     }
+}
+
+sub device : Tests(3) {
+    my $object = Stancer::Role::Payment::Auth::Stub->new();
+    my $ip = ipv4_provider();
+    my $port = random_integer(1, 65_535);
+    my $device = Stancer::Device->new(ip => $ip, port => $port);
+
+    is($object->device, undef, 'Undefined by default');
+
+    $object->device($device);
+
+    is($object->device, $device, 'Should be updated');
+    cmp_deeply_json($object, { device => { ip => $ip, port => $port } }, 'Should be exported');
 }
 
 1;

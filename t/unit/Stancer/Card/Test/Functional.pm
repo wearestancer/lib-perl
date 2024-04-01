@@ -5,18 +5,19 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
-use Stancer::Card;
+use English qw(-no_match_vars);
 use List::Util qw(shuffle);
+use Stancer::Card;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub get_data : Tests(11) {
     # 404
     throws_ok(
         sub { Stancer::Card->new('card_' . random_string(24))->populate() },
         'Stancer::Exceptions::Http::NotFound',
-        'Should throw a NotFound (404) error'
+        'Should throw a NotFound (404) error',
     );
 
     my $card = Stancer::Card->new('card_9bKZ9cr0Ji0qSPs5c1uMQG5z');
@@ -76,7 +77,11 @@ sub crud : Tests(19) {
         $card->cvc($cvc);
 
         throws_ok { $card->send() } 'Stancer::Exceptions::Http::Conflict', 'Should annonce a conflict';
-        is($@->message, 'Card already exists, you may want to update it instead creating a new one (' . $card_id . q/)/, 'Should indicate the error');
+        is(
+            $EVAL_ERROR->message,
+            'Card already exists, you may want to update it instead creating a new one (' . $card_id . q/)/,
+            'Should indicate the error',
+        );
     }
 
     { # 3 tests
@@ -126,7 +131,7 @@ sub crud : Tests(19) {
         my $card = Stancer::Card->new($card_id);
 
         throws_ok { $card->name } 'Stancer::Exceptions::Http::NotFound', 'Should not be available';
-        is($@->message, 'No such card ' . $card_id, 'Should indicate the error');
+        is($EVAL_ERROR->message, 'No such card ' . $card_id, 'Should indicate the error');
     }
 }
 

@@ -7,14 +7,14 @@ use base 'Exporter';
 
 use Carp qw(croak);
 use Cwd qw(cwd);
+use JSON qw(decode_json);
 use List::MoreUtils ();
 use List::Util qw(shuffle);
 use Log::Any::Test; # Loaded before to mock $log
 use Log::Any qw($log);
-use JSON qw(decode_json);
-use POSIX;
+use POSIX qw(floor);
 
-## no critic (ProhibitAutomaticExportation ProhibitPackageVars)
+## no critic (ProhibitAutomaticExportation, ProhibitPackageVars, RequireFinalReturn)
 our @EXPORT = qw(
     cmp_deeply_json
     random_date
@@ -61,7 +61,7 @@ sub random_date {
 
     if ($month == 2) {
         $day_max = 27;
-    } elsif (grep { /^$month$/sm } qw(4 6 9 11) ) {
+    } elsif (List::MoreUtils::any { $_ == $month } qw(4 6 9 11) ) {
         $day_max = 30;
     }
 
@@ -154,7 +154,7 @@ sub bic_provider { # 9 BIC
 
     @bics = shuffle(@bics);
 
-    return @bics if wantarray;
+    return @bics if wantarray; ## no critic (Community::Wantarray)
     return shift @bics;
 }
 
@@ -248,7 +248,7 @@ sub card_number_provider { # 36 card numbers
 
     @cards = shuffle(@cards);
 
-    return @cards if wantarray;
+    return @cards if wantarray; ## no critic (Community::Wantarray)
     return shift @cards;
 }
 
@@ -259,14 +259,14 @@ sub currencies_for_card_provider {
 sub currencies_for_sepa_provider {
     my @currencies = qw(EUR);
 
-    return @currencies if wantarray;
+    return @currencies if wantarray; ## no critic (Community::Wantarray)
     return shift @currencies;
 }
 
 sub currencies_provider {
     my @currencies = shuffle(qw(AUD CAD CHF DKK EUR GBP JPY NOK PLN SEK USD));
 
-    return @currencies if wantarray;
+    return @currencies if wantarray; ## no critic (Community::Wantarray)
     return shift @currencies;
 }
 
@@ -293,7 +293,7 @@ sub iban_provider { # 17 IBAN
 
     @ibans = shuffle(@ibans);
 
-    return @ibans if wantarray;
+    return @ibans if wantarray; ## no critic (Community::Wantarray)
     return shift @ibans;
 }
 
@@ -393,7 +393,7 @@ sub ipv4_provider { # 7 addresses
 
     @ips = shuffle(@ips);
 
-    return @ips if wantarray;
+    return @ips if wantarray; ## no critic (Community::Wantarray)
     return shift @ips;
 }
 
@@ -415,7 +415,7 @@ sub ipv6_provider { # 9 addresses
 
     @ips = shuffle(@ips);
 
-    return @ips if wantarray;
+    return @ips if wantarray; ## no critic (Community::Wantarray)
     return shift @ips;
 }
 
@@ -459,7 +459,7 @@ sub valid_card_number_provider {
 
     @cards = shuffle(@cards);
 
-    return @cards if wantarray;
+    return @cards if wantarray; ## no critic (Community::Wantarray)
     return shift @cards;
 }
 

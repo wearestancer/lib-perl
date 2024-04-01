@@ -46,17 +46,19 @@ Helper function for C<DateTime> type attribute.
 sub coerce_date {
     return sub {
         my $value = shift;
+        my $blessed = blessed($value);
 
-        return unless defined $value;
-        return $value->clone()->truncate(to => 'day') if blessed($value) and (blessed($value) eq 'DateTime');
+        return if not defined $value;
+
+        if (defined $blessed) {
+            return if $blessed ne 'DateTime';
+            return $value->clone()->truncate(to => 'day');
+        }
 
         my ($y, $m, $d) = split qr/-/sm, $value;
 
-        if (defined $d) {
-            return DateTime->new(year => $y, month => $m, day => $d);
-        }
-
-        return DateTime->from_epoch(epoch => $value);
+        return DateTime->new(year => $y, month => $m, day => $d)->truncate(to => 'day') if defined $d;
+        return DateTime->from_epoch(epoch => $value)->truncate(to => 'day');
     };
 }
 
@@ -69,17 +71,24 @@ Helper function for C<DateTime> type attribute.
 sub coerce_datetime {
     return sub {
         my $value = shift;
+
+        return if not defined $value;
+
         my $config = Stancer::Config->init();
         my %data = (
             epoch => $value,
         );
+        my $blessed = blessed($value);
 
-        if (defined $config->default_timezone) {
+        if (defined $blessed) {
+            return if $blessed ne 'DateTime';
+            return $value;
+        }
+
+        if (defined $config && defined $config->default_timezone) {
             $data{time_zone} = $config->default_timezone;
         }
 
-        return unless defined $value;
-        return $value if blessed($value) and (blessed($value) eq 'DateTime');
         return DateTime->from_epoch(%data);
     };
 }
@@ -94,9 +103,17 @@ sub coerce_instance {
     my $class = shift;
 
     return sub {
-        return $_[0] if not defined $_[0];
-        return $_[0] if blessed($_[0]) and blessed($_[0]) eq $class;
-        return $class->new($_[0]);
+        my $value = shift;
+        my $blessed = blessed($value);
+
+        return $value if not defined $value;
+
+        if (defined $blessed) {
+            return $value if $blessed eq $class;
+            return;
+        }
+
+        return $class->new($value);
     };
 }
 

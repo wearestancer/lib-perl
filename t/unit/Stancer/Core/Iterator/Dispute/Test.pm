@@ -9,6 +9,8 @@ use base qw(Test::Class);
 use Stancer::Core::Iterator::Dispute;
 use TestCase;
 
+## no critic (RequireFinalReturn)
+
 sub instanciate : Tests(2) {
     my $object = Stancer::Core::Iterator::Dispute->new();
 

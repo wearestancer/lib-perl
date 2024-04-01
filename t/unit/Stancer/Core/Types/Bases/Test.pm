@@ -5,10 +5,11 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Core::Types::Bases::Stub;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub bool_test : Tests(10) {
     ok(Stancer::Core::Types::Bases::Stub->new(a_boolean => 1), '"1" is valid');
@@ -23,17 +24,17 @@ sub bool_test : Tests(10) {
     throws_ok {
         Stancer::Core::Types::Bases::Stub->new(a_boolean => $integer);
     } 'Stancer::Exceptions::InvalidArgument', 'Can not be an integer';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bases::Stub->new(a_boolean => $string);
     } 'Stancer::Exceptions::InvalidArgument', 'Can not be a string';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bases::Stub->new(a_boolean => undef);
     } 'Stancer::Exceptions::InvalidArgument', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub enum : Tests(6) {
@@ -49,12 +50,12 @@ sub enum : Tests(6) {
     throws_ok {
         Stancer::Core::Types::Bases::Stub->new(an_enumeration => $string);
     } 'Stancer::Exceptions::InvalidArgument', 'Can not be anything else';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Bases::Stub->new(an_enumeration => undef);
     } 'Stancer::Exceptions::InvalidArgument', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub str_test : Tests(3) {
@@ -67,7 +68,7 @@ sub str_test : Tests(3) {
     throws_ok {
         Stancer::Core::Types::Bases::Stub->new(a_string => undef);
     } 'Stancer::Exceptions::InvalidArgument', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 1;

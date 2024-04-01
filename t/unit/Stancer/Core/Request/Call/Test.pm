@@ -11,6 +11,8 @@ use Stancer::Core::Request::Call;
 use Stancer::Exceptions::Throwable;
 use TestCase;
 
+## no critic (RequireFinalReturn)
+
 sub exception : Tests(2) {
     my $exception = Stancer::Exceptions::Throwable->new();
 

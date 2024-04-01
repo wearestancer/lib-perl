@@ -9,7 +9,7 @@ use base qw(Test::Class);
 use Stancer::Core::Types::ApiKeys::Stub;
 use TestCase;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub api_key : Tests(14) {
     ok(Stancer::Core::Types::ApiKeys::Stub->new(an_api_key => 'pprod_' . random_string(24)), 'Public live key');

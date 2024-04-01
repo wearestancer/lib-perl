@@ -9,6 +9,8 @@ use base qw(Test::Class);
 use Stancer::Sepa::Check::Status;
 use TestCase;
 
+## no critic (RequireFinalReturn)
+
 sub constants : Tests(5) {
     is(Stancer::Sepa::Check::Status::AVAILABLE, 'available', 'Constant "Stancer::Sepa::Check::Status::AVAILABLE" exists');
     is(Stancer::Sepa::Check::Status::CHECK_ERROR, 'check_error', 'Constant "Stancer::Sepa::Check::Status::CHECK_ERROR" exists');

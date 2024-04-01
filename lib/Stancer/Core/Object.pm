@@ -102,7 +102,7 @@ sub _attribute_builder {
         return $this->$attr;
     }
 
-    return;
+    return undef;
 }
 
 =begin comment
@@ -401,7 +401,7 @@ C<$attr> must be a string, keys should be an object property.
 sub get {
     my ($this, $target) = @_;
 
-    return unless defined $this->_api_data;
+    return undef unless defined $this->_api_data;
     return dclone($this->_api_data) unless defined $target;
 
     my $data = $this->_api_data->{$target};

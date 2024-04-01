@@ -8,6 +8,7 @@ use base qw(Test::Class);
 use TestCase qw(:lwp); # Must be called first to initialize logs
 use DateTime;
 use DateTime::Span;
+use English qw(-no_match_vars);
 use Stancer::Auth::Status;
 use Stancer::Card;
 use Stancer::Core::Object::Stub;
@@ -18,7 +19,7 @@ use Stancer::Refund::Status;
 use Stancer::Sepa;
 use List::Util qw(shuffle);
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars, RequireExtendedFormatting)
 
 sub instanciate : Tests(30) {
     { # 4 tests
@@ -299,26 +300,41 @@ sub country : Tests(3) {
     throws_ok { $object->country($country) } qr/country is a read-only accessor/sm, 'Not writable';
 }
 
-sub currency : Tests(3) {
-    { # 3 tests
+sub currency : Tests(21) {
+    { # 2 tests * 10 entries => 20
         note 'Should alert if a method is asked with an unsupported currency';
 
         my $payment = Stancer::Payment->new();
 
         $payment->methods_allowed('sepa');
 
-        throws_ok { $payment->currency('eur') } 'Stancer::Exceptions::InvalidCurrency', 'Should throw an error';
-        is($@->message, 'You can not ask for "EUR" with "sepa" method.', 'Should indicate the error');
+        for my $currency (currencies_for_card_provider()) {
+            next if $currency eq 'EUR';
 
-        my $currency;
+            throws_ok {
+                $payment->currency($currency)
+            } 'Stancer::Exceptions::InvalidCurrency', 'Should throw an error (' . $currency . ')';
 
-        do {
-            $currency = currencies_provider();
-        } while lc $currency eq 'eur';
+            is(
+                $EVAL_ERROR->message,
+                'You can not ask for "' . $currency . '" with "sepa" method.',
+                'Should indicate the error (' . $currency . ')',
+            );
+        }
+    }
 
-        $payment->currency($currency);
+    { # 1 test * 1 entry
+        note 'Should allow supported currencies';
 
-        is($payment->currency, lc $currency, 'Should have new value');
+        my $payment = Stancer::Payment->new();
+
+        $payment->methods_allowed('sepa');
+
+        for my $currency (currencies_for_sepa_provider()) {
+            $payment->currency($currency);
+
+            is($payment->currency, lc $currency, 'Should have new value');
+        }
     }
 }
 
@@ -359,7 +375,11 @@ sub del : Tests(2) {
     my $object = Stancer::Payment->new();
 
     throws_ok { $object->del } 'Stancer::Exceptions::BadMethodCall', 'Always throw an error';
-    is($@->message, 'You are not allowed to delete a payment, you need to refund it instead.', 'Should indicate the error');
+    is(
+        $EVAL_ERROR->message,
+        'You are not allowed to delete a payment, you need to refund it instead.',
+        'Should indicate the error',
+    );
 }
 
 sub description : Tests(3) {
@@ -687,89 +707,149 @@ sub list : Tests(136) {
         note 'Exceptions - created';
         # 9 tests
 
-        throws_ok { Stancer::Payment->list(created => time + 100) } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with integer)';
-        is($@->message, 'Created must be in the past.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created => time + 100)
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with integer)';
+        is($EVAL_ERROR->message, 'Created must be in the past.', $message->());
 
-        throws_ok { Stancer::Payment->list(created => $date) } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with DateTime)';
-        is($@->message, 'Created must be in the past.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created => $date)
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Created must be in the past (with DateTime)';
+        is($EVAL_ERROR->message, 'Created must be in the past.', $message->());
 
-        throws_ok { Stancer::Payment->list(created => random_string(10)) } 'Stancer::Exceptions::InvalidSearchCreation', 'Should only works with integer and DateTime instance';
-        is($@->message, 'Created must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Should only works with integer and DateTime instance';
+        is($EVAL_ERROR->message, 'Created must be a position integer or a DateTime object.', $message->());
 
-        throws_ok { Stancer::Payment->list(created => Stancer::Card->new()) } 'Stancer::Exceptions::InvalidSearchCreation', 'Should not accept blessed variable other than DataTime';
-        is($@->message, 'Created must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created => Stancer::Card->new())
+        } 'Stancer::Exceptions::InvalidSearchCreation', 'Should not accept blessed variable other than DataTime';
+        is($EVAL_ERROR->message, 'Created must be a position integer or a DateTime object.', $message->());
 
-        isa_ok(Stancer::Payment->list(created => time - 1000), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(created => $created)');
+        isa_ok(
+            Stancer::Payment->list(created => time - 1000),
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list(created => $created)',
+        );
 
         note 'Exceptions - created until';
         # 11 tests
 
-        throws_ok { Stancer::Payment->list(created_until => time + 100) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with integer)';
-        is($@->message, 'Created until must be in the past.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created_until => time + 100)
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with integer)';
+        is($EVAL_ERROR->message, 'Created until must be in the past.', $message->());
 
-        throws_ok { Stancer::Payment->list(created_until => $date) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with DateTime)';
-        is($@->message, 'Created until must be in the past.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created_until => $date)
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be in the past (with DateTime)';
+        is($EVAL_ERROR->message, 'Created until must be in the past.', $message->());
 
-        throws_ok { Stancer::Payment->list(created_until => random_string(10)) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should only works with integer and DateTime instance';
-        is($@->message, 'Created until must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created_until => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should only works with integer and DateTime instance';
+        is($EVAL_ERROR->message, 'Created until must be a position integer or a DateTime object.', $message->());
 
-        throws_ok { Stancer::Payment->list(created_until => Stancer::Card->new()) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should not accept blessed variable other than DataTime';
-        is($@->message, 'Created until must be a position integer or a DateTime object.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created_until => Stancer::Card->new())
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Should not accept blessed variable other than DataTime';
+        is($EVAL_ERROR->message, 'Created until must be a position integer or a DateTime object.', $message->());
 
-        throws_ok { Stancer::Payment->list(created => time - 100, created_until => time - 200) } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be after created';
-        is($@->message, 'Created until can not be before created.', $message->());
+        throws_ok {
+            Stancer::Payment->list(created => time - 100, created_until => time - 200)
+        } 'Stancer::Exceptions::InvalidSearchUntilCreation', 'Created until must be after created';
+        is($EVAL_ERROR->message, 'Created until can not be before created.', $message->());
 
-        isa_ok(Stancer::Payment->list(created_until => time - 1000), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(created_until => $created_until)');
+        isa_ok(
+            Stancer::Payment->list(created_until => time - 1000),
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list(created_until => $created_until)',
+        );
 
         note 'Exceptions - limit';
         # 7 tests
 
-        throws_ok { Stancer::Payment->list(limit => 0) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be at least 1';
-        is($@->message, 'Limit must be between 1 and 100.', $message->());
+        throws_ok {
+            Stancer::Payment->list(limit => 0)
+        } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be at least 1';
+        is($EVAL_ERROR->message, 'Limit must be between 1 and 100.', $message->());
 
-        throws_ok { Stancer::Payment->list(limit => 101) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be maximum 100';
-        is($@->message, 'Limit must be between 1 and 100.', $message->());
+        throws_ok {
+            Stancer::Payment->list(limit => 101)
+        } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be maximum 100';
+        is($EVAL_ERROR->message, 'Limit must be between 1 and 100.', $message->());
 
-        throws_ok { Stancer::Payment->list(limit => random_string(10)) } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be an integer';
-        is($@->message, 'Limit must be an integer.', $message->());
+        throws_ok {
+            Stancer::Payment->list(limit => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchLimit', 'Limit must be an integer';
+        is($EVAL_ERROR->message, 'Limit must be an integer.', $message->());
 
-        isa_ok(Stancer::Payment->list(limit => random_integer(99) + 1), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(limit => $limit)');
+        isa_ok(
+            Stancer::Payment->list(limit => random_integer(99) + 1),
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list(limit => $limit)',
+        );
 
         note 'Exceptions - start';
         # 5 tests
 
-        throws_ok { Stancer::Payment->list(start => -1) } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be positive';
-        is($@->message, 'Start must be a positive integer.', $message->());
+        throws_ok {
+            Stancer::Payment->list(start => -1)
+        } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be positive';
+        is($EVAL_ERROR->message, 'Start must be a positive integer.', $message->());
 
-        throws_ok { Stancer::Payment->list(start => random_string(10)) } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be an integer';
-        is($@->message, 'Start must be a positive integer.', $message->());
+        throws_ok {
+            Stancer::Payment->list(start => random_string(10))
+        } 'Stancer::Exceptions::InvalidSearchStart', 'Start must be an integer';
+        is($EVAL_ERROR->message, 'Start must be a positive integer.', $message->());
 
-        isa_ok(Stancer::Payment->list(start => random_integer(100)), 'Stancer::Core::Iterator::Payment', 'Should accept start filter otherwise');
+        isa_ok(
+            Stancer::Payment->list(start => random_integer(100)),
+            'Stancer::Core::Iterator::Payment',
+            'Should accept start filter otherwise',
+        );
 
         note 'Exceptions - empty';
         # 4 tests
 
-        throws_ok { Stancer::Payment->list() } 'Stancer::Exceptions::InvalidSearchFilter', 'Search filter are mandatory';
-        is($@->message, 'Invalid search filters.', $message->());
+        throws_ok {
+            Stancer::Payment->list()
+        } 'Stancer::Exceptions::InvalidSearchFilter', 'Search filter are mandatory';
+        is($EVAL_ERROR->message, 'Invalid search filters.', $message->());
 
-        throws_ok { Stancer::Payment->list(foo => random_string(5)) } 'Stancer::Exceptions::InvalidSearchFilter', 'Only known filters works';
-        is($@->message, 'Invalid search filters.', $message->());
+        throws_ok {
+            Stancer::Payment->list(foo => random_string(5))
+        } 'Stancer::Exceptions::InvalidSearchFilter', 'Only known filters works';
+        is($EVAL_ERROR->message, 'Invalid search filters.', $message->());
 
         note 'Exceptions - order_id';
         # 3 tests
 
-        throws_ok { Stancer::Payment->list(order_id => random_string(50)) } 'Stancer::Exceptions::InvalidSearchOrderId', 'Order ID must be 36 characters long maximum';
-        is($@->message, 'Invalid order ID.', $message->());
+        throws_ok {
+            Stancer::Payment->list(order_id => random_string(50))
+        } 'Stancer::Exceptions::InvalidSearchOrderId', 'Order ID must be 36 characters long maximum';
+        is($EVAL_ERROR->message, 'Invalid order ID.', $message->());
 
-        isa_ok(Stancer::Payment->list(order_id => random_string(36)), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
+        isa_ok(
+            Stancer::Payment->list(order_id => random_string(36)),
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list(order_id => $order_id)',
+        );
 
         note 'Exceptions - unique_id';
         # 3 tests
 
-        throws_ok { Stancer::Payment->list(unique_id => random_string(50)) } 'Stancer::Exceptions::InvalidSearchUniqueId', 'Unique ID must be 36 characters long maximum';
-        is($@->message, 'Invalid unique ID.', $message->());
+        throws_ok {
+            Stancer::Payment->list(unique_id => random_string(50))
+        } 'Stancer::Exceptions::InvalidSearchUniqueId', 'Unique ID must be 36 characters long maximum';
+        is($EVAL_ERROR->message, 'Invalid unique ID.', $message->());
 
-        isa_ok(Stancer::Payment->list(unique_id => random_string(36)), 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(unique_id => $unique_id)');
+        isa_ok(
+            Stancer::Payment->list(unique_id => random_string(36)),
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list(unique_id => $unique_id)',
+        );
     }
 
     { # 11 tests
@@ -790,10 +870,10 @@ sub list : Tests(136) {
         isa_ok($failed, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(order_id => $order_id)');
 
         dies_ok { $failed->next() } 'Should still die';
-        like($@, qr/$error/sm, 'Should have the message passed to die/croak');
+        like($EVAL_ERROR, qr/$error/sm, 'Should have the message passed to die/croak');
 
         # Not Moo object
-        $mock_response->mock('decoded_content', sub { die bless {} });
+        $mock_response->mock('decoded_content', sub { die bless {} }); ## no critic (ClassHierarchies::ProhibitOneArgBless)
 
         $failed = Stancer::Payment->list(order_id => random_string(10));
 
@@ -878,7 +958,11 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({created => 1_541_586_400, created_until => 1_541_586_569});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list(created => $created, created_until => $created_until)');
+        isa_ok(
+            $list,
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list(created => $created, created_until => $created_until)',
+        );
 
         my $payment;
 
@@ -1012,7 +1096,11 @@ sub list : Tests(136) {
 
         my $list = Stancer::Payment->list({created => $span, created_until => $created + 100});
 
-        isa_ok($list, 'Stancer::Core::Iterator::Payment', 'Stancer::Payment->list({created => $created, created_until => $created_until})');
+        isa_ok(
+            $list,
+            'Stancer::Core::Iterator::Payment',
+            'Stancer::Payment->list({created => $created, created_until => $created_until})',
+        );
 
         my $payment;
 
@@ -1059,7 +1147,7 @@ sub method : Tests(3) {
     throws_ok { $object->method($method) } qr/method is a read-only accessor/sm, 'Not writable';
 }
 
-sub methods_allowed : Tests(24) {
+sub methods_allowed : Tests(100) {
     my @methods = shuffle qw(card sepa);
     my $method = $methods[0];
 
@@ -1101,63 +1189,83 @@ sub methods_allowed : Tests(24) {
         cmp_deeply_json($payment, { methods_allowed => $results }, 'Should be exported');
     }
 
-    { # 15 tests
-        my $currency;
-
-        do {
-            $currency = currencies_for_card_provider();
-        } while lc $currency eq 'eur';
-
-        { # 4 tests
+    { # 91 tests
+        { # 4 tests * 10 entries => 40
             note 'Should alert if a method is asked with an unsupported currency';
 
             my $payment = Stancer::Payment->new();
 
-            $payment->currency($currency);
+            for my $currency (currencies_for_card_provider()) {
+                next if $currency eq 'EUR';
 
-            throws_ok { $payment->methods_allowed(\@methods) } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
-            is($@->message, 'You can not ask for "sepa" with "' . $currency . '" currency.', 'Should indicate the error');
+                $payment->currency($currency);
 
-            throws_ok { $payment->methods_allowed('sepa') } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
-            is($@->message, 'You can not ask for "sepa" with "' . $currency . '" currency.', 'Should indicate the error');
+                throws_ok {
+                    $payment->methods_allowed(\@methods)
+                } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
+                is(
+                    $EVAL_ERROR->message,
+                    'You can not ask for "sepa" with "' . $currency . '" currency.',
+                    'Should indicate the error',
+                );
+
+                throws_ok {
+                    $payment->methods_allowed('sepa')
+                } 'Stancer::Exceptions::InvalidMethod', 'Should throw an error';
+                is(
+                    $EVAL_ERROR->message,
+                    'You can not ask for "sepa" with "' . $currency . '" currency.',
+                    'Should indicate the error',
+                );
+            }
         }
 
-        { # 4 tests
+        { # 4 tests * 11 entries => 44
             note 'Should still work with other method';
 
             my $payment = Stancer::Payment->new();
             my $local_method = 'card';
 
-            $payment->currency($currency);
-            $payment->methods_allowed($local_method);
+            for my $currency (currencies_for_card_provider()) {
+                $payment->currency($currency);
+                $payment->methods_allowed($local_method);
 
-            my $results = $payment->methods_allowed;
+                my $results = $payment->methods_allowed;
 
-            is(ref $results, 'ARRAY', 'Should return an array');
-            ok(scalar @{$results} == 1, 'Should have only one allowed method');
+                is(ref $results, 'ARRAY', 'Should return an array');
+                ok(scalar @{$results} == 1, 'Should have only one allowed method');
 
-            is($results->[0], $local_method, 'Should have expected value');
-            cmp_deeply_json($payment, { currency => lc $currency, methods_allowed => [$local_method] }, 'Should be exported');
+                is($results->[0], $local_method, 'Should have expected value');
+                cmp_deeply_json(
+                    $payment,
+                    { currency => lc $currency, methods_allowed => [$local_method] },
+                    'Should be exported',
+                );
+            }
         }
 
-        { # 4 tests
+        { # 4 tests * 1 entry
             note 'Should still work with supported currency';
 
             my $payment = Stancer::Payment->new();
             my $local_method = 'sepa';
 
-            $currency = currencies_for_sepa_provider();
+            for my $currency (currencies_for_sepa_provider()) {
+                $payment->currency($currency);
+                $payment->methods_allowed($local_method);
 
-            $payment->currency($currency);
-            $payment->methods_allowed($local_method);
+                my $results = $payment->methods_allowed;
 
-            my $results = $payment->methods_allowed;
+                is(ref $results, 'ARRAY', 'Should return an array');
+                ok(scalar @{$results} == 1, 'Should have only one allowed method');
 
-            is(ref $results, 'ARRAY', 'Should return an array');
-            ok(scalar @{$results} == 1, 'Should have only one allowed method');
-
-            is($results->[0], $local_method, 'Should have expected value');
-            cmp_deeply_json($payment, { currency => lc $currency, methods_allowed => [$local_method] }, 'Should be exported');
+                is($results->[0], $local_method, 'Should have expected value');
+                cmp_deeply_json(
+                    $payment,
+                    { currency => lc $currency, methods_allowed => [$local_method] },
+                    'Should be exported',
+                );
+            }
         }
 
         { # 3 tests
@@ -1165,7 +1273,7 @@ sub methods_allowed : Tests(24) {
 
             my $content = read_file '/t/fixtures/payment/read.json', json => 1;
 
-            $content->{currency} = $currency;
+            $content->{currency} = 'EUR';
             $content->{methods_allowed} = \@methods;
 
             $mock_response->set_always(decoded_content => encode_json $content);
@@ -1208,19 +1316,31 @@ sub payment_page_url : Tests(9) {
 
     # We need a return url
     throws_ok { $object->payment_page_url } 'Stancer::Exceptions::MissingReturnUrl', 'A return url is mandatory';
-    is($@->message, 'You must provide a return URL before going to the payment page.', 'Should indicate the error');
+    is(
+        $EVAL_ERROR->message,
+        'You must provide a return URL before going to the payment page.',
+        'Should indicate the error',
+    );
 
     $object->return_url('https://' . random_string(25));
 
     # We need an id
     throws_ok { $object->payment_page_url } 'Stancer::Exceptions::MissingPaymentId', 'A payment ID is mandatory';
-    is($@->message, 'A payment ID is mandatory to obtain a payment page URL. Maybe you forgot to send the payment.', 'Should indicate the error');
+    is(
+        $EVAL_ERROR->message,
+        'A payment ID is mandatory to obtain a payment page URL. Maybe you forgot to send the payment.',
+        'Should indicate the error',
+    );
 
     $object->send();
 
     # We need a public key
     throws_ok { $object->payment_page_url } 'Stancer::Exceptions::MissingApiKey', 'A public key is mandatory';
-    is($@->message, 'A public API key is needed to obtain a payment page URL.', 'Should indicate the error');
+    is(
+        $EVAL_ERROR->message,
+        'A public API key is needed to obtain a payment page URL.',
+        'Should indicate the error',
+    );
 
     my $config = Stancer::Config->init();
     my $ptest = 'ptest_' . random_string(24);
@@ -1369,7 +1489,9 @@ sub pay : Tests(37) {
     }
 
     # We need a card or a sepa account
-    throws_ok { Stancer::Payment->pay($amount, 'eur') } 'Stancer::Exceptions::MissingPaymentMethod', 'A payment method is mandatory';
+    throws_ok {
+        Stancer::Payment->pay($amount, 'eur')
+    } 'Stancer::Exceptions::MissingPaymentMethod', 'A payment method is mandatory';
 }
 
 sub populate : Tests(12) {
@@ -1430,7 +1552,12 @@ sub refund : Tests(41) {
         $refund_content_1->{id} = $id_1;
         $refund_content_2->{id} = $id_2;
 
-        $mock_response->set_series('decoded_content', $payment_content, encode_json $refund_content_1, encode_json $refund_content_2);
+        $mock_response->set_series(
+            'decoded_content',
+            $payment_content,
+            encode_json $refund_content_1,
+            encode_json $refund_content_2,
+        );
         $mock_ua->clear();
 
         $refunds = $payment->refunds;
@@ -1444,12 +1571,20 @@ sub refund : Tests(41) {
         throws_ok {
             $payment->refund($too_much);
         } 'Stancer::Exceptions::InvalidAmount', 'Can not refund more than paid';
-        is($@->message, 'You are trying to refund (' . sprintf('%.02f', $too_much / 100) . ' EUR) more than paid (34.06 EUR).', 'Should indicate the error');
+        is(
+            $EVAL_ERROR->message,
+            'You are trying to refund (' . sprintf('%.02f', $too_much / 100) . ' EUR) more than paid (34.06 EUR).',
+            'Should indicate the error',
+        );
 
         throws_ok {
             $payment->refund($not_enough);
         } 'Stancer::Exceptions::InvalidAmount', 'Can not refund less than 50 €/$/£';
-        is($@->message, 'Amount must be an integer and at least 50, "' . $not_enough . '" given.', 'Should indicate the error');
+        is(
+            $EVAL_ERROR->message,
+            'Amount must be an integer and at least 50, "' . $not_enough . '" given.',
+            'Should indicate the error',
+        );
 
         # First refund
 
@@ -1472,8 +1607,10 @@ sub refund : Tests(41) {
         my $pattern = 'You are trying to refund (%.02f EUR) more than paid (%.02f EUR with %.02f EUR already refunded).';
         my $message = sprintf $pattern, $paid / 100, $paid / 100, $amount_1 / 100;
 
-        throws_ok { $payment->refund($paid) } 'Stancer::Exceptions::InvalidAmount', 'Can not refund more than refundable';
-        is($@->message, $message, 'Should indicate the error');
+        throws_ok {
+            $payment->refund($paid)
+        } 'Stancer::Exceptions::InvalidAmount', 'Can not refund more than refundable';
+        is($EVAL_ERROR->message, $message, 'Should indicate the error');
 
         # Second refund, without amount
 
@@ -1502,19 +1639,35 @@ sub refund : Tests(41) {
         is($messages->[1]->{message}, 'API call: POST https://api.stancer.com/v1/refunds', 'Should log API call');
 
         is($messages->[2]->{level}, 'info', 'Should be a info message');
-        is($messages->[2]->{message}, 'Refund ' . $refunds->[0]->id . ' created', 'Should indicate refund creation (1)');
+        is(
+            $messages->[2]->{message},
+            'Refund ' . $refunds->[0]->id . ' created',
+            'Should indicate refund creation (1)',
+        );
 
         is($messages->[3]->{level}, 'info', 'Should be a info message');
-        is($messages->[3]->{message}, sprintf('Refund of %.02f %s on payment "%s"', $amount_1 / 100, $currency, $id), 'Should indicate a refund (1)');
+        is(
+            $messages->[3]->{message},
+            sprintf('Refund of %.02f %s on payment "%s"', $amount_1 / 100, $currency, $id),
+            'Should indicate a refund (1)',
+        );
 
         is($messages->[4]->{level}, 'debug', 'Should be a debug message');
         is($messages->[4]->{message}, 'API call: POST https://api.stancer.com/v1/refunds', 'Should log API call');
 
         is($messages->[5]->{level}, 'info', 'Should be a info message');
-        is($messages->[5]->{message}, 'Refund ' . $refunds->[1]->id . ' created', 'Should indicate refund creation (1)');
+        is(
+            $messages->[5]->{message},
+            'Refund ' . $refunds->[1]->id . ' created',
+            'Should indicate refund creation (1)',
+        );
 
         is($messages->[6]->{level}, 'info', 'Should be a info message');
-        is($messages->[6]->{message}, sprintf('Refund of %.02f %s on payment "%s"', $amount_2 / 100, $currency, $id), 'Should indicate a refund (2)');
+        is(
+            $messages->[6]->{message},
+            sprintf('Refund of %.02f %s on payment "%s"', $amount_2 / 100, $currency, $id),
+            'Should indicate a refund (2)',
+        );
     }
 
     { # 2 tests
@@ -1523,7 +1676,11 @@ sub refund : Tests(41) {
         my $payment = Stancer::Payment->new;
 
         throws_ok { $payment->refund() } 'Stancer::Exceptions::MissingPaymentId', 'Can not refund payment without ID';
-        is($@->message, 'A payment ID is mandatory. Maybe you forgot to send the payment.', 'Should indicate the error');
+        is(
+            $EVAL_ERROR->message,
+            'A payment ID is mandatory. Maybe you forgot to send the payment.',
+            'Should indicate the error',
+        );
     }
 }
 
@@ -1539,7 +1696,12 @@ sub refundable_amount : Tests(6) {
     $refund_content_1->{amount} = $amount_1;
     $refund_content_2->{amount} = $amount_2;
 
-    $mock_response->set_series('decoded_content', $payment_content, encode_json $refund_content_1, encode_json $refund_content_2);
+    $mock_response->set_series(
+        'decoded_content',
+        $payment_content,
+        encode_json $refund_content_1,
+        encode_json $refund_content_2,
+    );
 
     {
         note 'Without data';
@@ -1615,7 +1777,9 @@ sub response_author : Tests(3) {
 
     is($object->response_author, $response_author, 'Should have a value');
 
-    throws_ok { $object->response_author($response_author) } qr/response_author is a read-only accessor/sm, 'Not writable';
+    throws_ok {
+        $object->response_author($response_author)
+    } qr/response_author is a read-only accessor/sm, 'Not writable';
 }
 
 sub return_url : Tests(4) {
@@ -2440,30 +2604,34 @@ sub send_global : Tests(221) {
         note 'Validate issue #3';
 
         my ($sec, $min, $hour, $mday, $mon, $y, $wday, $yday, $isdst) = localtime;
-        my $exp_year = random_integer(1, 15) + $y + 1900;
+        my $exp_year = random_integer(5, 15) + $y + 1900;
         my $exp_month = random_integer(1, 12);
 
         my $card = Stancer::Card->new(
-            number    => '4000000000000002',
-            cvc       => '123',
+            number => '4000000000000002',
+            cvc => '123',
             exp_month => $exp_month,
-            exp_year  => $exp_year,
+            exp_year => $exp_year,
         );
 
         my $payment = Stancer::Payment->new(
-            amount    => 3999,
-            auth      => 'https://www.example.org/?' . random_string(50),
-            currency  => 'eur',
-            card      => $card,
-            device    => {},
+            amount => 3999,
+            auth => 'https://www.example.org/?' . random_string(50),
+            currency => 'eur',
+            card => $card,
+            device => {},
         );
 
-        throws_ok { $payment->send() } 'Stancer::Exceptions::InvalidIpAddress', 'Manually added device must be checked for valid IP';
+        throws_ok {
+            $payment->send()
+        } 'Stancer::Exceptions::InvalidIpAddress', 'Manually added device must be checked for valid IP';
 
         my $ip = ipv4_provider();
         local $ENV{SERVER_ADDR} = $ip;
 
-        throws_ok { $payment->send() } 'Stancer::Exceptions::InvalidPort', 'Manually added device must be checked for valid port';
+        throws_ok {
+            $payment->send()
+        } 'Stancer::Exceptions::InvalidPort', 'Manually added device must be checked for valid port';
     }
 }
 

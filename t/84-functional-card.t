@@ -8,12 +8,12 @@ BEGIN {
     ## no critic (ProhibitUnlessBlocks, RequireCheckedSyscalls)
     unless ($ENV{AUTHOR_TESTING}) {
         print qq{1..0 # SKIP these tests are for testing by the author\n};
-        exit
+        exit;
     }
 
     unless ($ENV{API_KEY} && $ENV{API_HOST}) {
         print qq{1..0 # SKIP these tests need configuration\n};
-        exit
+        exit;
     }
     ## use critic
 }

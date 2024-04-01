@@ -1,0 +1,87 @@
+
+stages:
+  - lint
+  - test
+
+
+variables:
+  DOCKER_REGISTRY: wearestancer
+
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - when: always
+
+
+.perl::base:
+  image: ${DOCKER_REGISTRY}/perl:$VERSION
+
+  before_script:
+    - perl -v
+    - dzil authordeps --missing | cpm install -g -
+    - dzil listdeps --missing --develop | cpm install -g -
+    - >
+      if [ "${MINIMALS:-0}" -eq 1 ]; then
+        grep -E "^requires '[a-zA-Z:]+', '[0-9.]+'" cpanfile | grep -v perl | tr "'" ' ' | awk '{ print $2 "@" $4 }' | cpm install -g - ;
+      fi
+
+
+.perl::all-versions:
+  extends:
+    - .perl::base
+
+  parallel:
+    matrix:
+      - MINIMALS:
+          - 1
+          - 0
+        VERSION:
+          - '5.34'
+          - '5.36'
+          - '5.38'
+          - '5.39'
+
+
+.perl::stable-version:
+  extends:
+    - .perl::base
+
+  variables:
+    VERSION: '5.34'
+
+
+critic:
+  extends:
+    - .perl::stable-version
+
+  stage: lint
+
+  script:
+    - critic --verbose --output codequality.json
+
+  artifacts:
+    reports:
+      codequality: codequality.json
+
+
+test:
+  extends:
+    - .perl::all-versions
+
+  stage: test
+
+  script:
+    - dzil cover -report coveralls -report cobertura
+    - find .build -name cobertura.xml -exec cp {} . \;
+
+  coverage: '/^Total [\s\d\.\/na]+ (\d+\.\d+)$/'
+
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml

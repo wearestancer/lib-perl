@@ -14,7 +14,7 @@ use Stancer::Core::Object::Stub;
 use Stancer::Core::Request;
 use List::MoreUtils ();
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Test {
     my $object = Stancer::Core::Request->new;
@@ -422,7 +422,7 @@ sub request_errors : Tests(49) {
 
         throws_ok(sub { $request->get($object) }, $error->{name}, $error->{message});
 
-        my $exception = $@; ## no critic (ProhibitPunctuationVars)
+        my $exception = $EVAL_ERROR;
         my $log_message = sprintf 'HTTP %d - %s', $error->{code}, $exception->message;
         my $messages = $log->msgs;
         my $tmp = 'Should be a' . ($error->{level} eq 'error' ? 'n error' : q/ / . $error->{level}) . ' message';
@@ -522,13 +522,17 @@ sub request_errors_message : Tests(14) {
     foreach my $error (@errors) { # 2 tests
         note $error->{message};
 
-        $mock_response->set_always(decoded_content => $error->{return});
+        $mock_response->set_always(decoded_content => $error->{'return'});
 
-        throws_ok(sub { $request->get($object) }, 'Stancer::Exceptions::Http::BadRequest', 'Should throw an exception');
+        throws_ok(
+            sub { $request->get($object) },
+            'Stancer::Exceptions::Http::BadRequest',
+            'Should throw an exception',
+        );
 
-        my $exception = $@; ## no critic (ProhibitPunctuationVars)
+        my $exception = $EVAL_ERROR;
 
-        is($exception->message, $error->{expected}, ,'Should have expected message');
+        is($exception->message, $error->{expected}, 'Should have expected message');
     }
 }
 
