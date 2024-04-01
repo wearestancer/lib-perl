@@ -3,9 +3,11 @@ Revision history for Stancer.
 Unreleased
 
 - Add missing `$Dispute::amount`
-- Rewrite main package pod
+- Rewrite main package POD
 - Remove default timeout
 - Update dependencies
+- Remove needs to `Business::IBAN`
+- Remove needs to `Business::SWIFT`
 - Remove needs to `List::MoreUtils::one()`
 
 

@@ -1,8 +1,6 @@
 
 requires 'perl', '5.020';
 
-requires 'Business::IBAN', '0.06';
-requires 'Business::SWIFT', '0.02';
 requires 'Carp';
 requires 'DateTime', '1.57';
 requires 'JSON', '4.00';
