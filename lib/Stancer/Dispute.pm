@@ -14,11 +14,16 @@ use Stancer::Payment;
 use Scalar::Util qw(blessed);
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Object';
 with qw(
     Stancer::Role::Amount::Read
+);
+
+use namespace::clean;
+
+has '+endpoint' => (
+    default => 'disputes',
 );
 
 =method C<< Stancer::Dispute->new() : I<self> >>
@@ -36,12 +41,6 @@ This method accept an optional string, it will be used as an entity ID for API c
 
     # Get an existing payment
     my $exist = Stancer::Dispute->new($token);
-
-=cut
-
-has '+endpoint' => (
-    default => 'disputes',
-);
 
 =attr C<amount>
 

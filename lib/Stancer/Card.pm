@@ -14,10 +14,11 @@ use Stancer::Exceptions::InvalidExpirationYear;
 use List::MoreUtils qw(any);
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Object';
 with 'Stancer::Role::Country', 'Stancer::Role::Name';
+
+use namespace::clean;
 
 has '+_boolean' => (
     default => sub{ [qw(tokenize)] },

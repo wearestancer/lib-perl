@@ -16,9 +16,10 @@ use Log::Any qw($log);
 use Scalar::Util qw(blessed);
 
 use Moo::Role;
-use namespace::clean;
 
 requires qw(_attribute_builder amount currency id);
+
+use namespace::clean;
 
 =attr C<refundable_amount>
 

@@ -16,9 +16,10 @@ use Stancer::Exceptions::MissingApiKey;
 use Try::Tiny;
 
 use Moo::Role;
-use namespace::clean;
 
 requires qw(_add_modified _attribute_builder id);
+
+use namespace::clean;
 
 =attr C<return_url>
 

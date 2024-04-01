@@ -10,9 +10,10 @@ use warnings;
 use Stancer::Core::Types qw(Maybe Str Url);
 
 use Moo;
-use namespace::clean;
 
 extends 'Stancer::Core::Object';
+
+use namespace::clean;
 
 use Stancer::Auth::Status;
 
