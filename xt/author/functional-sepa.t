@@ -18,13 +18,13 @@ BEGIN {
     ## use critic
 }
 
-use lib './t/unit';
+use lib '../../t/unit';
 use Stancer::Config;
-use Stancer::Dispute::Test::Functional;
+use Stancer::Sepa::Test::Functional;
 
 my $config = Stancer::Config->init($ENV{API_KEY});
 
 $config->host($ENV{API_HOST});
-$config->lwp(LWP::UserAgent->new(ssl_opts => {SSL_ca_path=>'/etc/ssl/certs'}));
+$config->lwp(LWP::UserAgent->new(ssl_opts => { SSL_ca_path => '/etc/ssl/certs' }));
 
 Test::Class->runtests;

@@ -18,9 +18,9 @@ BEGIN {
     ## use critic
 }
 
-use lib './t/unit';
+use lib '../../t/unit';
 use Stancer::Config;
-use Stancer::Customer::Test::Functional;
+use Stancer::Dispute::Test::Functional;
 
 my $config = Stancer::Config->init($ENV{API_KEY});
 

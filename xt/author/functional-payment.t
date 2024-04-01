@@ -18,7 +18,7 @@ BEGIN {
     ## use critic
 }
 
-use lib './t/unit';
+use lib '../../t/unit';
 use Stancer::Config;
 use Stancer::Payment::Test::Functional;
 
