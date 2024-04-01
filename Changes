@@ -1,6 +1,6 @@
 Revision history for Stancer.
 
-Unreleased
+1.0.1   2024-04-01 (TRIAL RELEASE)
 
 - Add missing `$Dispute::amount`
 - Fix currencies for SEPA
