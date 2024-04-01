@@ -75,8 +75,16 @@ test:
   stage: test
 
   script:
-    - dzil cover -report coveralls -report cobertura
-    - find .build -name cobertura.xml -exec cp {} . \;
+    - dzil cover
+
+    - cd .build/*
+
+    - cover -no-summary -report cobertura
+
+    - >
+      if [ -n "${COVERALLS_REPO_TOKEN:-}" ]; then
+        cover -no-summary -report coveralls
+      fi
 
   coverage: '/^Total [\s\d\.\/na]+ (\d+\.\d+)$/'
 
@@ -84,4 +92,4 @@ test:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: cobertura.xml
+        path: .build/*/cover_db/cobertura.xml
