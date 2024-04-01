@@ -5,13 +5,14 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Core::Types::Dates::Stub;
 use TestCase;
 
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
+
 my @parts = localtime;
 my $current = $parts[5] + 1900;
-
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars)
 
 sub month : Tests(20) {
     my @months = qw(
@@ -40,22 +41,22 @@ sub month : Tests(20) {
     throws_ok {
         Stancer::Core::Types::Dates::Stub->new(a_month => 0);
     } 'Stancer::Exceptions::InvalidExpirationMonth', 'Must be more than 0';
-    is($@->message, sprintf($message, q/"0"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"0"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Dates::Stub->new(a_month => 13);
     } 'Stancer::Exceptions::InvalidExpirationMonth', 'Must be maximum 12';
-    is($@->message, sprintf($message, q/"13"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"13"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Dates::Stub->new(a_month => $string);
     } 'Stancer::Exceptions::InvalidExpirationMonth', 'Must be an integer';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Dates::Stub->new(a_month => undef);
     } 'Stancer::Exceptions::InvalidExpirationMonth', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub year : Tests(35) {
@@ -71,12 +72,12 @@ sub year : Tests(35) {
     throws_ok {
         Stancer::Core::Types::Dates::Stub->new(a_year => $string);
     } 'Stancer::Exceptions::InvalidExpirationYear', 'Must be an integer';
-    is($@->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $string . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::Dates::Stub->new(a_year => undef);
     } 'Stancer::Exceptions::InvalidExpirationYear', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 1;

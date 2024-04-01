@@ -46,7 +46,7 @@ Refunded amount.
 
 =attr C<currency>
 
-Read/Write string, must be one of "EUR", "GBP" or "USD".
+Read/Write string, must be one of "AUD", "CAD", "CHF", "DKK", "EUR", "GBP", "JPY", "NOK", "PLN", "SEK" or "USD".
 
 Refund currency.
 

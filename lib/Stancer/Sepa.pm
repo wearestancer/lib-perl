@@ -159,7 +159,7 @@ sub formatted_iban {
     my $this = shift;
     my $iban = $this->iban;
 
-    return if not defined $iban;
+    return undef if not defined $iban;
 
     $iban =~ s/(.{1,4})/$1 /gsm;
     $iban =~ s/\s*$//sm;

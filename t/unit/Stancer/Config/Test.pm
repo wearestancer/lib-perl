@@ -5,15 +5,16 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Config;
 use Stancer::Core::Object::Stub;
 use Stancer::Core::Request;
 use LWP::UserAgent;
-use POSIX;
+use POSIX qw(floor);
 use TestCase qw(:lwp);
 use Try::Tiny;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireExtendedFormatting, RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub instanciate : Tests(2) {
     my $key = 'stest_' . random_string(24);
@@ -83,7 +84,7 @@ sub calls : Tests(18) {
 
         throws_ok(sub { $request->get($object) }, 'Stancer::Exceptions::Http::Conflict', 'This one was expected');
 
-        my $exception = $@; ## no critic (ProhibitPunctuationVars)
+        my $exception = $EVAL_ERROR;
 
         isa_ok($config->calls, 'ARRAY', '$config->calls');
         is(scalar @{ $config->calls }, 2, 'Should have one more call registered');
@@ -400,7 +401,7 @@ sub mode : Tests(5) {
     throws_ok {
         $object->mode($invalid);
     } 'Stancer::Exceptions::InvalidArgument', 'Should emit an exception';
-    is($@->message, sprintf($message, q/"/ . $invalid . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $invalid . q/"/), 'Message check');
 }
 
 sub port : Tests(2) {
@@ -445,13 +446,25 @@ sub public_key : Tests(6) {
 
         my $object = Stancer::Config->new();
 
-        throws_ok { $object->public_key } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (dev)';
-        is($@->message, 'You did not provide valid public API key for development.', 'Should indicate the error (dev)');
+        throws_ok {
+            $object->public_key
+        } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (dev)';
+        is(
+            $EVAL_ERROR->message,
+            'You did not provide valid public API key for development.',
+            'Should indicate the error (dev)',
+        );
 
         $object->mode('live');
 
-        throws_ok { $object->public_key } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (prod)';
-        is($@->message, 'You did not provide valid public API key for production.', 'Should indicate the error (prod)');
+        throws_ok {
+            $object->public_key
+        } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (prod)';
+        is(
+            $EVAL_ERROR->message,
+            'You did not provide valid public API key for production.',
+            'Should indicate the error (prod)',
+        );
     }
 
     { # 2 tests
@@ -502,13 +515,25 @@ sub secret_key : Tests(6) {
 
         my $object = Stancer::Config->new();
 
-        throws_ok { $object->secret_key } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (dev)';
-        is($@->message, 'You did not provide valid secret API key for development.', 'Should indicate the error (dev)');
+        throws_ok {
+            $object->secret_key
+        } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (dev)';
+        is(
+            $EVAL_ERROR->message,
+            'You did not provide valid secret API key for development.',
+            'Should indicate the error (dev)',
+        );
 
         $object->mode('live');
 
-        throws_ok { $object->secret_key } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (prod)';
-        is($@->message, 'You did not provide valid secret API key for production.', 'Should indicate the error (prod)');
+        throws_ok {
+            $object->secret_key
+        } 'Stancer::Exceptions::MissingApiKey', 'Should complain if no key available (prod)';
+        is(
+            $EVAL_ERROR->message,
+            'You did not provide valid secret API key for production.',
+            'Should indicate the error (prod)',
+        );
     }
 
     { # 2 tests

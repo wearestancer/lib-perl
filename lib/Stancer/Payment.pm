@@ -132,7 +132,7 @@ Card country.
 
 =attr C<currency>
 
-Read/Write string, must be one of "EUR", "GBP" or "USD".
+Read/Write string, must be one of "AUD", "CAD", "CHF", "DKK", "EUR", "GBP", "JPY", "NOK", "PLN", "SEK" or "USD".
 
 Payment currency.
 
@@ -147,7 +147,7 @@ around currency => sub {
 
     if (
             (not $class->_process_hydratation)
-        && lc $args eq 'eur'
+        && lc $args ne 'eur'
         && defined $methods
         && any { $_ eq 'sepa' } @{$methods}
     ) {
@@ -388,7 +388,7 @@ sub is_error {
     return $nope if $this->status eq Stancer::Payment::Status::CAPTURED;
     return $nope if $this->status eq Stancer::Payment::Status::CAPTURE_SENT;
     return $nope if $this->status eq Stancer::Payment::Status::TO_CAPTURE;
-    return $nope if not($this->capture) && $this->status eq Stancer::Payment::Status::AUTHORIZED;
+    return $nope if not($this->capture) and $this->status eq Stancer::Payment::Status::AUTHORIZED;
     return $yep;
 }
 
@@ -413,7 +413,7 @@ sub is_success {
     return $yep if $this->status eq Stancer::Payment::Status::CAPTURED;
     return $yep if $this->status eq Stancer::Payment::Status::CAPTURE_SENT;
     return $yep if $this->status eq Stancer::Payment::Status::TO_CAPTURE;
-    return $yep if not($this->capture) && $this->status eq Stancer::Payment::Status::AUTHORIZED;
+    return $yep if not($this->capture) and $this->status eq Stancer::Payment::Status::AUTHORIZED;
     return $nope;
 }
 

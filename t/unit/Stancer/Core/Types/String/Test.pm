@@ -6,10 +6,11 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Core::Types::String::Stub;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn, RequireInterpolationOfMetachars)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub char : Tests(5) {
     ok(Stancer::Core::Types::String::Stub->new(a_char_10 => random_string(10)), '10 characters lenth');
@@ -38,22 +39,22 @@ sub description : Tests(9) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_description => $too_short);
     } 'Stancer::Exceptions::InvalidDescription', 'Must be at least 3 characters';
-    is($@->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_description => $too_long);
     } 'Stancer::Exceptions::InvalidDescription', 'Must be maximum 64 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_description => $integer);
     } 'Stancer::Exceptions::InvalidDescription', 'Must be a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_description => undef);
     } 'Stancer::Exceptions::InvalidDescription', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub email : Tests(9) {
@@ -68,22 +69,22 @@ sub email : Tests(9) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_email => $too_short);
     } 'Stancer::Exceptions::InvalidEmail', 'Must be at least 5 characters';
-    is($@->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_email => $too_long);
     } 'Stancer::Exceptions::InvalidEmail', 'Must be maximum 64 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_email => $integer);
     } 'Stancer::Exceptions::InvalidEmail', 'Must be a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_email => undef);
     } 'Stancer::Exceptions::InvalidEmail', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub external_id : Tests(5) {
@@ -96,12 +97,12 @@ sub external_id : Tests(5) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_external_id => $too_long);
     } 'Stancer::Exceptions::InvalidExternalId', 'Must be maximum 36 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_external_id => undef);
     } 'Stancer::Exceptions::InvalidExternalId', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub mobile : Tests(7) {
@@ -115,17 +116,17 @@ sub mobile : Tests(7) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_mobile => $too_short);
     } 'Stancer::Exceptions::InvalidMobile', 'Must be at least 8 characters';
-    is($@->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_mobile => $too_long);
     } 'Stancer::Exceptions::InvalidMobile', 'Must be maximum 16 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_mobile => undef);
     } 'Stancer::Exceptions::InvalidMobile', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub name : Tests(9) {
@@ -140,22 +141,22 @@ sub name : Tests(9) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_name => $too_short);
     } 'Stancer::Exceptions::InvalidName', 'Must be at least 4 characters';
-    is($@->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_short . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_name => $too_long);
     } 'Stancer::Exceptions::InvalidName', 'Must be maximum 64 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_name => $integer);
     } 'Stancer::Exceptions::InvalidName', 'Must be a string';
-    is($@->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $integer . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(a_name => undef);
     } 'Stancer::Exceptions::InvalidName', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub order_id : Tests(5) {
@@ -168,12 +169,12 @@ sub order_id : Tests(5) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_order_id => $too_long);
     } 'Stancer::Exceptions::InvalidOrderId', 'Must be maximum 36 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_order_id => undef);
     } 'Stancer::Exceptions::InvalidOrderId', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub unique_id : Tests(5) {
@@ -186,12 +187,12 @@ sub unique_id : Tests(5) {
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_unique_id => $too_long);
     } 'Stancer::Exceptions::InvalidUniqueId', 'Must be maximum 36 characters';
-    is($@->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, q/"/ . $too_long . q/"/), 'Message check');
 
     throws_ok {
         Stancer::Core::Types::String::Stub->new(an_unique_id => undef);
     } 'Stancer::Exceptions::InvalidUniqueId', 'Can not be undef';
-    is($@->message, sprintf($message, 'undef'), 'Message check');
+    is($EVAL_ERROR->message, sprintf($message, 'undef'), 'Message check');
 }
 
 sub varchar : Tests(17) {

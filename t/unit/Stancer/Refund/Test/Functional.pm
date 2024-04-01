@@ -5,16 +5,16 @@ use strict;
 use warnings;
 use base qw(Test::Class);
 
+use English qw(-no_match_vars);
 use Stancer::Card;
 use Stancer::Customer;
 use Stancer::Payment;
 use Stancer::Payment::Status;
 use Stancer::Refund::Status;
 use List::Util qw(shuffle);
-use POSIX;
 use TestCase;
 
-## no critic (ProhibitPunctuationVars, RequireFinalReturn)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars)
 
 sub refund : Tests(38) {
     { # 11 tests
@@ -49,8 +49,15 @@ sub refund : Tests(38) {
 
         is($payment->status, Stancer::Payment::Status::TO_CAPTURE, 'Payment is waiting to be captured');
 
-        throws_ok { $payment->refund(random_integer(50, $amount)) } 'Stancer::Exceptions::Http::Conflict', 'Partial refunds are impossible on not captured payment';
-        is($@->message, 'Payment cannot be partially refunded before it has been captured', 'Check exception message');
+        throws_ok {
+            $payment->refund(random_integer(50, $amount))
+        } 'Stancer::Exceptions::Http::Conflict', 'Partial refunds are impossible on not captured payment';
+
+        is(
+            $EVAL_ERROR->message,
+            'Payment cannot be partially refunded before it has been captured',
+            'Check exception message',
+        );
 
         isa_ok($payment->refund(), 'Stancer::Payment', '$payment->refund()');
         is($payment->status, Stancer::Payment::Status::CANCELED, 'Payment is now canceled');
@@ -63,7 +70,11 @@ sub refund : Tests(38) {
         is($refunds->[0]->amount, $amount, 'Should have refunded all amount');
         is($refunds->[0]->currency, lc $currency, 'Should have refunded with same currency');
         is($refunds->[0]->payment, $payment, 'Should have same instance of orignal payment');
-        is($refunds->[0]->status, Stancer::Refund::Status::PAYMENT_CANCELED, 'Should indicate that the source payment has been canceled');
+        is(
+            $refunds->[0]->status,
+            Stancer::Refund::Status::PAYMENT_CANCELED,
+            'Should indicate that the source payment has been canceled',
+        );
     }
 
     { # 27 tests

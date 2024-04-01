@@ -32,7 +32,9 @@ sub refundable_amount {
     my $this = shift;
     my $amount = $this->amount;
 
-    map { $amount -= $_->{amount} } @{$this->refunds};
+    for (@{$this->refunds}) {
+        $amount -= $_->{amount};
+    }
 
     return $amount;
 }

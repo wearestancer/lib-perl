@@ -9,9 +9,8 @@ use TestCase qw(:lwp); # Must be called first to initialize logs
 use Stancer::Config;
 use Stancer::Sepa;
 use DateTime;
-use POSIX;
 
-## no critic (RequireFinalReturn, RequireInterpolationOfMetachars, RequireExtendedFormatting)
+## no critic (RequireFinalReturn, ValuesAndExpressions::RequireInterpolationOfMetachars, RequireExtendedFormatting)
 
 sub instanciate : Tests(15) {
     { # 4 tests
